@@ -2,32 +2,40 @@
 \label{cha:bg}
 \vspace{0.4 cm}
 
-In this chapter, write the Background...
+This chapter contains background information on the most relevant topics in this thesis: Large Language Models (LLMs), Software Testing and Test Oracle, Automated Test Generation.
+Software development has evolved into a cornerstone of modern society, powering an array of applications from communication and commerce to healthcare and entertainment. This ubiquity underscores the critical importance of software quality and reliability. In the quest for robust software, software testing plays a pivotal role. The effectiveness of testing largely hinges on the concept of a "test oracle," which serves as a benchmark for assessing whether software behaves as expected.
 
+\section{Large Language Models (LLMs)}
+\label{sec:llms}
+\vspace{0.2 cm}
 
-\section{Section}
-\label{sec:data}
+Large language models (LLMs) represent a remarkable breakthrough in deep learning for natural language processing. They are capable of understanding and generating text in a manner that closely resembles human language comprehension. Behind the scenes, these LLMs are powered by extensive transformer models, which serve as the driving force behind their impressive capabilities.
+
+While humans perceive text as collections of words, sentences, and documents, computers view text as mere sequences of characters. To bridge this gap, recurrent neural networks were initially employed to process text, operating one word or character at a time. However, they often struggled with retaining information from the beginning of a sequence when reaching the end.
+
+In 2017, Vaswani et al. introduced the "Attention is All You Need" paper, which laid the foundation for the transformer model. This revolutionary model leverages the attention mechanism, allowing it to process entire sentences or paragraphs at once, rather than one word at a time. This shift enables the transformer model to grasp the context of a word more effectively, leading to superior language understanding. Many cutting-edge language processing models are now based on transformers.
+
+To utilize a transformer model for text processing, the first step involves tokenizing the text into a sequence of words. These tokens are then encoded as numerical values and transformed into embeddings, which are vector representations preserving the meaning of the tokens. Subsequently, the transformer's encoder transforms these token embeddings into a context vector, encapsulating the essence of the entire input. Using this vector, the transformer's decoder generates output based on contextual clues. For example, providing the original input as a clue allows the decoder to produce the next word in a sentence naturally. This process can be repeated to generate entire paragraphs, starting from an initial sentence—a method known as autoregressive generation. Large language models utilize transformer models capable of handling lengthy input texts, generating complex concepts with their extensive encoder and decoder layers.
+
+Recurrent neural networks excel at predicting the next word in a text due to the inherent rules and redundancies in human language. These language patterns, including grammar, provide structure and context for predictions. Claude Shannon's work on English language entropy highlights that despite having 27 letters (including spaces), English text has an entropy of only 2.1 bits per letter, making it predictable to some extent. Machine learning models, particularly transformers, excel at making such predictions.
+
+However, it's important to note that a transformer model's understanding of grammar is implicit. It doesn't explicitly store grammar rules but learns them from examples, extending to the ideas presented in those examples. The effectiveness of this learning process depends on the model's size and complexity.
+
+Large language models, such as the GPT-3 model supporting ChatGPT, are built on an extensive scale. They are so massive that they cannot run on a single computer and are typically offered as services through APIs or web interfaces. These models are trained on vast amounts of text data from the internet, encompassing books, articles, websites, and diverse sources. During training, the model learns the statistical relationships between words, phrases, and sentences, enabling it to generate coherent and contextually relevant responses to prompts or queries.
+
+Drawing from this wealth of text, GPT-3, for example, exhibits multilingual capabilities and possesses knowledge across various topics. This versatility allows it to produce text in various styles. While it may seem astonishing that large language models can perform tasks like translation, text summarization, and question answering, it becomes less surprising when considering these as specialized "grammars" that align with the input prompts.
+
+\section{Software Testing and Test Oracle}
+\label{sec:software_testing_and_oracle}
 \vspace{0.2 cm}
 
 In this section, we will discuss many things... there will also be footnotes\footnote{ \url{https://www.footnote.com/} }, ...
 This is how we cite\cite{Nguyen2019} provided a case study
 
-\section{Another Section}
-\label{sec:timeseries}
+\section{Automated Test Generation}
+\label{sec:automated_test_generation}
 \vspace{0.2 cm}
 
-In this section, a brief introduction to ... 
+Historically, test oracles have been constructed manually by human testers, which is a labor-intensive and potentially error-prone process. Automation techniques have been developed to alleviate this burden. Automation not only reduces the resources required for testing but also enhances test coverage by enabling the generation of a large number of test cases with minimal human intervention.
 
-\vspace{0.1 cm}
-\subsection{Subsection}
-\label{sec:transformers}
-\vspace{0.1 cm}
-
-In this subsection, an overview of ...
-
-\vspace{0.1 cm}
-\subsection{Another Subsection}
-\label{sec:automl}
-\vspace{0.1 cm}
-
-In this subsection, ...
+Automated test generation techniques leverage various algorithms and heuristics to generate test cases automatically. These techniques can be categorized into model-based, search-based, and specification-based approaches. Model-based methods create models of the software's behavior, while search-based approaches explore the input space to find test cases that trigger specific conditions. Specification-based methods rely on formal specifications to guide test case generation.
