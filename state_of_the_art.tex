@@ -1,8 +1,8 @@
 \chapter{State of the Art}
-\label{cha:soa}
+\label{cha:state_of_the_art}
 \vspace{0.4 cm}
 
-In this chapter, write the State of the art...
+In this chapter, we perform a comprehensive exploration of the current state of the art within the domain of automated test oracle generation and the application of Large Language Models (LLMs) in software testing. We initiate our journey by introducing the foundational concepts and standards that underpin the representation of software testing data, with a specific focus on the intricacies of test oracles. Subsequently, we delve into an extensive survey of cutting-edge technologies and methodologies proposed in the literature for automated test oracle generation. This survey encompasses a wide spectrum of implementations and use cases, offering a panoramic view of the advancements in this field. As our journey unfolds, we shine a spotlight on two pivotal subjects that have garnered significant attention and innovation in the research community: Oracle generation and Unit Test Generation. These topics are not merely explored but dissected in dedicated subsections, elucidating their relevance and implications in the context of test oracle generation. Furthermore, we narrow our gaze to scrutinize the intricate nuances of three distinct yet interrelated use cases, each of paramount importance: automated test oracle generation for functional testing, regression testing, and security testing. These dedicated sections unravel the intricacies of generating test oracles that cater to the specific requirements and challenges posed by each testing domain. By the end of this chapter, a clear and comprehensive context will be established, providing the foundation upon which our proposed system for automated test oracle generation is developed. The synthesis of insights from literature, advancements in technology, and an understanding of the unique challenges in the realm of software testing will pave the way for a novel and effective approach that leverages Large Language Models to elevate the field of software quality assurance.
 
 
 \section{Methodology for Identifying Relevant Papers}
@@ -19,22 +19,24 @@ In this section, ...
 In this subsection, an overview of ...
 
 \begin{enumerate}[label=\textbf{\arabic*.}]
-  \item\textbf{Initial search and first-stage filtering.} Working days from 10 AM to 2 PM, and from 6 PM to 10 PM;
-  \item\textbf{Selection criteria.}Working days from 8 AM to 10 AM, from 2 PM to 6 PM, and from 10 PM to midnight;
-  \item\textbf{Snowballing.}Saturday, Sunday, National Holidays, and working days from midnight to 8 AM.
+  \item\textbf{Initial search and first-stage filtering.} \textbf{TODO}
+  \item\textbf{Selection criteria.} \textbf{TODO}
+  \item\textbf{Snowballing.} \textbf{TODO}
 \end{enumerate}
 
-\section{Another Section}
-\label{sec:timeseries}
+\section{Oracle Generation}
+\label{sec:soa_oracle_generation}
 \vspace{0.2 cm}
 
-In this section, a brief introduction to ... 
+Dinella, Ryan, Mytkowicz, and Lahiri introduce TOGA\cite{gabriel_ryan_toga_2022}, an innovative contribution to the domain of Test Oracle Generation. This comprehensive framework comprises distinct components, including an Exceptional Oracle Classifier, trained on Methods2Test, an Assertion Oracle Ranker trained on Atlas, and Candidate Assertion Set Generation, aided by both a Global Constant Dictionary and a Local Dictionary. TOGA's integration with EvoSuite enhances its versatility, providing a test prefix and unit context. The authors address pivotal research questions, demonstrating the effectiveness of TOGA in both grammar representation and the inference of assertions and exceptional behavior. Their results showcase TOGA's accuracy, surpassing existing methods in oracle inference and revealing its potential to uncover a substantial number of real-world bugs, including those missed by other approaches. The contributions encompass the introduction of a transformer-based approach, adapted datasets, and an end-to-end integration with EvoSuite, all of which significantly advance the field of test oracle generation. While the study acknowledges potential threats to validity, the TOGA framework's multifaceted capabilities demonstrate a promising direction for automated test oracle generation in software testing research.
 
+Tufano, Drain, Svyatkovskiy, and Sundaresan present an innovative contribution\cite{tufano_generating_2022} to Test Oracle Generation, focusing on the accurate generation of assert statements for unit test cases using pretrained transformers. Their framework, comprising the BART Transformer, English and Code Pretraining, and Asserts Finetuning, demonstrates significant advancements in this domain. Addressing key research questions, their approach excels when compared to ATLAS, achieving a remarkable 80\% relative improvement in top-1 accuracy. The study also explores the impact of pretraining on assert generation tasks, revealing substantial performance gains attributed to English and source code pretraining. The incorporation of the Focal Method contributes to a notable improvement in assert generation accuracy. Furthermore, the paper highlights the quality of the generated assert statements, demonstrating the model's ability to generate complex assertions akin to developer-authored ones. Notably, their approach can be employed to enhance automatically generated test cases, improving test coverage by augmenting existing cases. The dataset, drawn from a diverse range of sources including English text and GitHub, underscores the empirical rigor of their research. While addressing potential threats to validity, the paper underscores the potential of pretrained transformers in revolutionizing test oracle generation, promising substantial advancements in the generation of accurate assert statements and the augmentation of test cases.
 
+Nie, Banerjee, Li, Mooney, and Gligoric introduce a novel approach TECO\cite{nie_learning_2023}, aimed at aiding developers in the efficient creation of test methods. Their groundbreaking approach, leverages code semantics and execution processes in machine learning models for code-related tasks. TECO, a transformer model trained on extensive code semantics data, demonstrates exceptional performance on the test completion task. It surpasses all baseline models by a significant margin, achieving an impressive exact-match accuracy of 17.61\%, a 29\% improvement over the best baseline. TECO not only generates compilable and runnable statements with high success rates but also excels in other metrics measuring lexical similarity. Moreover, the paper highlights TECO's impact on test oracle generation, showcasing an 82\% enhancement in exact-match accuracy over the prior state-of-the-art TOGA. Reranking by execution further enhances the model's ability to predict the next statement accurately, outperforming both TECO-noRr and CodeT5. The study also delves into the contribution of different types of code semantics, emphasizing their importance in improving prediction accuracy. The extensive evaluation relies on a substantial corpus of test methods from open-source projects, demonstrating the potential of TECO for various testing-related tasks. While recognizing usability and structured code representation as future considerations, the paper underscores the value of code semantics in enhancing the performance of large language models for code-related tasks. This work represents a significant stride in advancing the field of test completion and the broader domain of software testing research.
 
-\vspace{0.1 cm}
-\subsection{Another Subsection}
-\label{sec:automl}
-\vspace{0.1 cm}
+\section{Unit Test Generation}
+\label{sec:soa_unit_test_generation}
+\vspace{0.2 cm}
 
-In this subsection, ...
+To do...
+
