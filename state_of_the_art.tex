@@ -9,20 +9,81 @@ In this chapter, we perform a comprehensive exploration of the current state of 
 \label{sec:papaer_survey_methodology}
 \vspace{0.2 cm}
 
-In this section, ...
-
-\vspace{0.1 cm}
-\subsection{Selection Process}
-\label{sec:selection_process}
-\vspace{0.1 cm}
-
-In this subsection, an overview of ...
+In this section, we describe the methodology that we followed to identify relevant papers for our study. We conducted this survey to collect scientific literature at the crossroads of software testing and large language models. Our search strategy aimed for a broad search string that encompasses various ways researchers might mention work related to oracle generation with large language models, as explained below:
 
 \begin{enumerate}[label=\textbf{\arabic*.}]
-  \item\textbf{Initial search and first-stage filtering.} \textbf{TODO}
-  \item\textbf{Selection criteria.} \textbf{TODO}
-  \item\textbf{Snowballing.} \textbf{TODO}
+  \item\textbf{Initial search and first-stage filtering.} We began our search in the SciVerse Scopus digital library by using the following search string. We chose all papers whose title, abstract, or keywords aligned with any of the keywords in the query:
+
+  \textit{( TITLE-ABS-KEY( "software testing" OR "software verification" OR "software validation" OR "test case generation" OR "test suite generation" OR "test generation" OR "mutation testing" OR "fuzz testing" OR "property-based testing" OR "symbolic execution" OR "oracle" OR "assertion" ) AND TITLE-ABS-KEY ( "language model*" OR "transformer model*" ) )}
+
+  We started our search with a broad query in the SciVerse Scopus digital library and got 191 studies initially. We performed this search on 18 May 2023, 16:51:58. Since the query was broad, the initial set had papers not related to Software Testing and Large Language Models. It included various types of artifacts like research articles, editorials, standards, and welcome messages. To refine our selection, we manually reviewed titles and abstracts, removing papers clearly unrelated to Software Testing and LLMs, as well as irrelevant artifacts. After this, we ended up with a final set of 37 studies.
+  
+  \item\textbf{Selection criteria.} We further filtered the collected papers based on certain rules to keep only the ones directly related to software testing with large language models. We excluded papers that didn't focus on either software testing or large language models. The papers we kept had to meet specific criteria:
+      \begin{itemize}
+            \item \textbf{Inclusion Criterion 1:} The study should involve defining, applying, or experimenting with software testing solutions using large language models.
+            \item \textbf{Inclusion Criterion 2:} It presents an empirical or experimental study exploring the use of LLMs in software testing practices.
+            \item \textbf{Inclusion Criterion 3:} The paper applies LLMs to various tasks within the software testing lifecycle.
+            \item \textbf{Inclusion Criterion 4:} The study should have undergone peer review.
+            \item \textbf{Inclusion Criterion 5:} The study should be written in English.
+            
+      \end{itemize}
+
+  We excluded papers that meet at least one of the following exclusion criteria:
+        \begin{itemize}
+            \item \textbf{Exclusion Criterion 1:} Papers that don't involve software testing tasks, such as code comment generation.
+            \item \textbf{Exclusion Criterion 2:} Papers that don't use Large Language Models (LLMs).
+            \item \textbf{Exclusion Criterion 3:} Papers mentioning LLMs only in future work or discussions rather than actively using LLMs in their approach.
+            \item \textbf{Exclusion Criterion 4:} Studies conducted before 2015.
+            \item \textbf{Exclusion Criterion 5:} Secondary or tertiary studies, such as systematic literature reviews and surveys.
+            \item \textbf{Exclusion Criterion 6:} Studies not available as full-text.
+      \end{itemize}
+      
+  \item\textbf{Snowballing.} We completed the selection process with a snowballing procedure. We applied a full backward snowballing, by considering all the references included in the analyzed studies, and adding further relevant studies, provided they were indexed by at least one of these major digital libraries: SciVerse Scopus, IEEEXplore, and ACM DL. We conducted a partial forward snowballing starting from the most popular papers selected so far. In particular, we selected both the 10\% most cited papers and the top 10\% of the papers with the highest number of normalized citations (i.e.,citation/year), identifying a total of 12 highly popular studies. We considered all the papers that cite at least one of the identified popular studies, obtaining 71 possibly relevant studies. We pruned this set with the inclusion and exclusion criteria, and added 32 new papers to our set of papers. The process produced a set of 80 studies for our survey. During this process, we scheduled six plenary (physical or online) meetings in one year to define the include and exclude criteria, to discuss the studies, and to clarify and resolve doubtful cases.
 \end{enumerate}
+
+\begin{table}[H]
+\centering
+
+
+    \begin{tabular}{c|c|c|c|c}
+        \hline
+        \textbf{ID} & \textbf{Topic} & \textbf{Paper Title} & \textbf{Year} & \textbf{Reference}\\
+        \hline 
+        1 & \scriptsize\textsc{Oracle Generation} & \scriptsize\textsc{TOGA: A Neural Method for Test Oracle Generation} & 2022 & \cite{gabriel_ryan_toga_2022}\\
+        
+        2 & \scriptsize\textsc{Oracle Generation} & \scriptsize\textsc{Generating accurate assert statements for unit test} & 2022 & \cite{tufano_generating_2022}\\
+        & & \scriptsize\textsc{cases using pretrained transformers} & & \\
+        
+        3 & \scriptsize\textsc{Oracle Generation} & \scriptsize\textsc{Automated assertion generation via information} & 2022 & \cite{yu_automated_2022}\\
+        & & \scriptsize\textsc{retrieval and its integration with deep learning} & & \\
+        
+        4 & \scriptsize\textsc{Oracle Generation} & \scriptsize\textsc{Learning Deep Semantics for Test Completion} & 2023 & \cite{nie_learning_2023}\\
+
+        5 & \scriptsize\textsc{Oracle Generation} & \scriptsize\textsc{Towards More Realistic Evaluation for} & 2023 & \cite{liu_towards_2023}\\
+        & & \scriptsize\textsc{Neural Test Oracle Generation} & & \\
+        
+        6 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{Unit Test Case Generation with Transformers} & 2021 & \cite{tufano_unit_2021}\\
+        & & \scriptsize\textsc{and Focal Context} & & \\
+        
+        7 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{Adaptive Test Generation Using a Large Language Model} & 2023 & \cite{schafer_adaptive_2023}\\
+        
+        8 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{ChatUniTest: a ChatGPT-based automated unit} & 2023 & \cite{xie_chatunitest_2023}\\
+        & & \scriptsize\textsc{test generation tool} & & \\
+        
+        9 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{No More Manual Tests? Evaluating and Improving} & 2023 & \cite{yuan_no_2023}\\
+        & & \scriptsize\textsc{ChatGPT for Unit Test Generation} & & \\
+        
+        10 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{ChatGPT vs SBST: A Comparative Assessment of} & 2023 & \cite{tang_chatgpt_2023}\\
+        & & \scriptsize\textsc{Unit Test Suite Generation} & & \\
+        
+        11 & \scriptsize\textsc{Unit Test Generation} & \scriptsize\textsc{CodaMosa: Escaping Coverage Plateaus in} & 2023 & \cite{lemieux_codamosa_2023}\\
+        & & \scriptsize\textsc{Test Generation with Pre-trained Large Language Models} & & \\
+        
+    \end{tabular}
+
+\caption{Details of the collected papers.}
+\label{tab:collected_papers}
+\end{table}
 
 \section{Oracle Generation}
 \label{sec:soa_oracle_generation}
@@ -38,5 +99,6 @@ Nie, Banerjee, Li, Mooney, and Gligoric introduce a novel approach TECO\cite{nie
 \label{sec:soa_unit_test_generation}
 \vspace{0.2 cm}
 
-To do...
+In the study titled "ChatGPT vs SBST: A Comparative Assessment of Unit Test Suite Generation,"\cite{tang_chatgpt_2023} conducted by Yutian Tang, Zhijie Liu, Zhichao Zhou, and Xiapu Luo, the authors explore the capabilities of ChatGPT in the context of unit test suite generation and compare its performance with Search-Based Software Testing (SBST). The research investigates key aspects, including correctness, readability, code coverage, and bug detection, shedding light on the strengths and limitations of both approaches. The findings reveal that ChatGPT generates Java test cases, with 69.6\% successfully compiling and executing. Despite a majority being bug-free, some test cases exhibit severe issues. The study evaluates the readability of ChatGPT-generated test suites by assessing code style violations, highlighting predominant concerns such as indentation and adherence to coding rules. In terms of code coverage, EvoSuite outperforms ChatGPT, suggesting potential scenarios where LLMs like ChatGPT might excel. The study emphasizes the effectiveness of EvoSuite in bug detection, attributing it to the genetic algorithm and feedback mechanisms, proposing a hybrid approach combining SBST and LLM for enhanced software testing accuracy. The limitations include restricted access to ChatGPT's internals and time-bound performance considerations. Overall, the research contributes valuable insights into the comparative assessment of LLMs and SBST in software engineering.
 
+In the paper titled "ChatUniTest: a ChatGPT-based automated unit test generation tool," authored by Zhuokui Xie, Yinghao Chen, Chen Zhi, Shuiguang Deng, and Jianwei Yin, the authors introduce ChatUniTest\cite{xie_chatunitest_2023}, the first ChatGPT-based automated unit test generation tool. Evaluating its quality, ChatUniTest demonstrates a 30.86\% pass rate and 29.98\% correct test cases, showcasing its ability to generate high-quality unit tests. In a comparative analysis against EvoSuite, AthenaTest, and A3Test, ChatUniTest consistently outperforms EvoSuite in branch and line coverage and surpasses both AthenaTest and A3Test in various metrics, highlighting its robustness and superiority. Examining the contributions of different components, ChatGPT-based repair emerges as a significant enhancer, playing a crucial role in improving test case generation. The study also addresses the cost-effectiveness of unit test generation, revealing repair costs as the primary contributor. Despite limitations such as API cost and limited access to ChatGPT's internals, ChatUniTest marks a significant advancement in the realm of automated unit test generation, offering valuable insights and promising results.
