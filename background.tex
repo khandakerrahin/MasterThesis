@@ -21,6 +21,9 @@ Large language models, such as the GPT-3 model supporting ChatGPT, are built on 
 
 Drawing from this wealth of text, GPT-3, for example, exhibits multilingual capabilities and possesses knowledge across various topics. This versatility allows it to produce text in various styles. Leveraging this, large language models can perform tasks like translation, text summarization, question answering and sentiment analysis. They have become valuable tools for automating language-related tasks, simplifying content generation, and enhancing human-computer interaction. Beyond their natural language capabilities, LLMs are increasingly being explored in the realm of software engineering. Their proficiency in understanding programming languages and code-related contexts has opened doors to innovative applications in software development, code generation, and, notably, software testing.
 
+\textbf{TODO}\\
+Write about key concepts of LLMs used in this thesis.
+
 \section{Software Testing and Test Oracle}
 \label{sec:software_testing_and_oracle}
 \vspace{0.2 cm}
@@ -28,7 +31,29 @@ Drawing from this wealth of text, GPT-3, for example, exhibits multilingual capa
 Software testing emerges as the sentinel, guarding against the unseen complexities that may lurk within code. It is the systematic process of evaluating software to ensure that it behaves as intended and meets the specified requirements. Let us go through some of the key components and concepts of software testing.
 
 \begin{itemize}
-  \item \textbf{Test Case:} Imagine a test case as a set of predefined actions and inputs meticulously crafted to assess a specific aspect of software functionality. Test cases serve as the evaluative criteria, scrutinizing the software under different scenarios.
+  \item \textbf{Test Case:} Imagine a test case as a set of predefined actions and inputs meticulously crafted to assess a specific aspect of software functionality. Test cases serve as the evaluative criteria, scrutinizing the software under different scenarios. A JUnit test case typically follows a structure that includes the following components:
+
+    \begin{enumerate}
+        \item \textbf{Annotations:} \\
+        - \textit{@Test}: Indicates that the method is a test method. \\
+        - Other annotations like \textit{@Before, @After, @BeforeClass}, and \textit{@AfterClass} may also be used for setup and teardown operations.
+
+        \item \textbf{Test Method:} \\
+        - Contains the actual test logic that needs to be verified. \\
+        - It is annotated with \textit{@Test}. \\
+        - It often includes assertions to check whether the expected results match the actual results.
+
+        \item \textbf{Setup and Teardown Methods (Optional):} \\
+        - \textit{@Before}: Executed before each test method. It is used for setting up preconditions. \\
+        - \textit{@After}: Executed after each test method. It is used for cleaning up resources. \\
+        - \textit{@BeforeClass}: Executed once before any of the test methods in the class. It is used for expensive setup. \\
+        - \textit{@AfterClass}: Executed once after all the test methods in the class have been run. It is used for cleanup after all tests.
+
+        \item \textbf{Assertions:} \\
+        - Used to verify whether the expected outcomes match the actual outcomes. \\
+        - Commonly used methods\cite{noauthor_assert_nodate} include "assertEquals", "assertTrue", "assertFalse", "assertNotNull", "assertNull", etc.
+    \end{enumerate}
+  
   \item \textbf{Test Suite:} A collection of individual test cases forms a test suite. Test suites encompass diverse scenarios, covering a spectrum of functionalities to comprehensively evaluate the software.
   \item \textbf{Bug:} A bug, often referred to as a defect or issue, denotes an unintended and erroneous behavior within the software. The goal of testing is to unearth these bugs, enabling developers to rectify them before the software reaches end-users.
   \item \textbf{Test Oracle:} The Test Oracle is a critical entity that determines whether the software under examination 
@@ -49,7 +74,8 @@ Software testing emerges as the sentinel, guarding against the unseen complexiti
 
 Historically, test oracles have been constructed manually by human testers, inspecting software outputs against expected results. While effective, this approach is labor-intensive and prone to human error. Automation techniques have been developed to alleviate this burden. Automation not only reduces the resources required for testing but also enhances test coverage by enabling the generation of a large number of test cases with minimal human intervention.
 
-Automated test generation techniques leverage various algorithms and heuristics to generate test cases automatically. These techniques can be categorized into model-based, search-based, and specification-based approaches. Model-based methods create models of the software's behavior, while search-based approaches explore the input space to find test cases that trigger specific conditions. Specification-based methods rely on formal specifications to guide test case generation.
+Automated test generation techniques leverage various algorithms and heuristics to generate test cases automatically. These techniques can be categorized into model-based, search-based, and \\
+specification-based approaches. Model-based methods create models of the software's behavior, while search-based approaches explore the input space to find test cases that trigger specific conditions. Specification-based methods rely on formal specifications to guide test case generation.
 
 \textbf{The Oracle Problem:}
 In the context of automated testing, the Oracle Problem refers to the challenge of accurately determining expected outcomes. If the criteria for expected behavior are flawed, the automated testing tool may inadvertently accept erroneous behaviors as correct. 
