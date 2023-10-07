@@ -21,8 +21,33 @@ Large language models, such as the GPT-3 model supporting ChatGPT, are built on 
 
 Drawing from this wealth of text, GPT-3, for example, exhibits multilingual capabilities and possesses knowledge across various topics. This versatility allows it to produce text in various styles. Leveraging this, large language models can perform tasks like translation, text summarization, question answering and sentiment analysis. They have become valuable tools for automating language-related tasks, simplifying content generation, and enhancing human-computer interaction. Beyond their natural language capabilities, LLMs are increasingly being explored in the realm of software engineering. Their proficiency in understanding programming languages and code-related contexts has opened doors to innovative applications in software development, code generation, and, notably, software testing.
 
-\textbf{TODO}\\
-Write about key concepts of LLMs used in this thesis.
+Here are some of the key concepts of LLMs used in this thesis:
+\begin{enumerate}
+    \item \textbf{Prompts:} A prompt is a sequence of words or tokens provided to an LLM to generate a specific response. It serves as an instruction or query that guides the model in producing coherent and contextually relevant output. Crafting effective prompts is crucial in eliciting desired responses from LLMs, and it involves considering the language style, structure, and context that the model has been trained on.
+
+    \item \textbf{Tokens:} In the context of natural language processing, a token is a unit of text that LLMs operate on. Tokens can be as short as one character or as long as one word. For example, the sentence "LLMs are amazing!" would be tokenized into ["LLMs", " are", " amazing", "!"].
+
+    \item \textbf{LLM Configurations:} LLMs come with various configurations that can be adjusted to influence their behavior during text generation. Some key configurations include:
+
+        \begin{itemize}
+            \item \textbf{Temperature:} A parameter controlling the randomness of the generated output. Higher values (e.g., 1.0) produce more diverse but potentially less coherent text, while lower values (e.g., 0.7) result in more focused and deterministic responses.
+
+            \item \textbf{n\_predict:} The number of tokens to predict in a single generation step. Larger values can capture more context but may lead to slower generation.
+
+            \item \textbf{top\_p (nucleus sampling):} A probability threshold for sampling the next token. It helps in controlling the diversity of generated responses by limiting the choices to the most probable tokens.
+
+            \item \textbf{top\_k:} An alternative to top\_p, top\_k specifies the number of most probable tokens to consider for sampling.
+
+            \item \textbf{n\_batch:} The number of parallel sequences processed in each batch during generation.
+            
+            \item \textbf{repeat\_penalty:} A penalty applied to repeated tokens to encourage diversity in generated sequences.
+    
+            \item \textbf{repeat\_last\_n:} A parameter controlling the likelihood of repeating the last n tokens in the generated output.
+        \end{itemize}
+
+    These configurations provide users with fine-grained control over the trade-off between creativity and coherence in the generated text, allowing customization based on specific use cases.
+    
+\end{enumerate}
 
 \section{Software Testing and Test Oracle}
 \label{sec:software_testing_and_oracle}
@@ -30,10 +55,10 @@ Write about key concepts of LLMs used in this thesis.
 
 Software testing emerges as the sentinel, guarding against the unseen complexities that may lurk within code. It is the systematic process of evaluating software to ensure that it behaves as intended and meets the specified requirements. Let us go through some of the key components and concepts of software testing.
 
-\begin{itemize}
+\begin{enumerate}
   \item \textbf{Test Case:} Imagine a test case as a set of predefined actions and inputs meticulously crafted to assess a specific aspect of software functionality. Test cases serve as the evaluative criteria, scrutinizing the software under different scenarios. A JUnit test case typically follows a structure that includes the following components:
 
-    \begin{enumerate}
+    \begin{itemize}
         \item \textbf{Annotations:} \\
         - \textit{@Test}: Indicates that the method is a test method. \\
         - Other annotations like \textit{@Before, @After, @BeforeClass}, and \textit{@AfterClass} may also be used for setup and teardown operations.
@@ -52,7 +77,7 @@ Software testing emerges as the sentinel, guarding against the unseen complexiti
         \item \textbf{Assertions:} \\
         - Used to verify whether the expected outcomes match the actual outcomes. \\
         - Commonly used methods\cite{noauthor_assert_nodate} include "assertEquals", "assertTrue", "assertFalse", "assertNotNull", "assertNull", etc.
-    \end{enumerate}
+    \end{itemize}
   
   \item \textbf{Test Suite:} A collection of individual test cases forms a test suite. Test suites encompass diverse scenarios, covering a spectrum of functionalities to comprehensively evaluate the software.
   \item \textbf{Bug:} A bug, often referred to as a defect or issue, denotes an unintended and erroneous behavior within the software. The goal of testing is to unearth these bugs, enabling developers to rectify them before the software reaches end-users.
@@ -64,7 +89,7 @@ Software testing emerges as the sentinel, guarding against the unseen complexiti
   \item \textbf{Mutation coverage:} Mutation coverage quantifies the proportion of mutations that test suites successfully detect. It serves as a qualitative measure, indicating the thoroughness of testing in identifying and isolating potential defects. A high mutation coverage suggests that the test suite is adept at pinpointing code alterations, enhancing confidence in the software's resilience against subtle bugs and ensuring comprehensive testing across diverse scenarios.
   \item \textbf{Test strength:} Test strength encapsulates the effectiveness of a test suite in uncovering defects and ensuring software reliability. It considers factors such as the diversity of test cases, their ability to explore different code paths, and their capacity to reveal potential vulnerabilities. A robust test suite exhibits high test strength, providing a solid defense against bugs and contributing to the overall quality assurance strategy.
   
-\end{itemize}
+\end{enumerate}
 
 
 
