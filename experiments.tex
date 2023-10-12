@@ -4,10 +4,10 @@
 
 In this chapter, we're going to delve into the experiments we've crafted to put our approach into action and assess its performance. We describe the design, implementation, and evaluation steps, providing a detailed account of each experiment. These experiments are crucial to demonstrating the effectiveness and practicality of our approach in real-world scenarios.
 
-\section{Data Collection}
-\label{sec:data_collection}
+\section{Preprocessing}
+\label{sec:exp_preprocessing}
 \vspace{0.2 cm}
-Within this sub-chapter, we will elaborate on our methodology for assembling a collection of Java projects. We outline the procedures involved in generating test cases using automated tools such as EvoSuite and Randoop\cite{noauthor_randoop_nodate}, shedding light on the steps taken to ensure comprehensive test coverage. Additionally, we will discuss the process of preparing corresponding focal methods, elucidating how we identify and associate the specific methods targeted by each test case. This step is crucial in establishing a robust foundation for subsequent analyses and evaluations within the realm of software testing and development.
+Within this sub-chapter, we will elaborate on our methodology for assembling a collection of Java projects. We outline the procedures involved in generating test cases using EvoSuite and Randoop\cite{noauthor_randoop_nodate}, shedding light on the steps taken to ensure comprehensive test coverage. Additionally, we will discuss the process of preparing corresponding focal methods, elucidating how we identify and associate the specific methods targeted by each test case. This step is crucial in establishing a robust foundation for subsequent analyses and evaluations within the realm of software testing and development.
 
 \vspace{0.1 cm}
 \subsection{Java Projects Selection}
@@ -74,9 +74,7 @@ From these chosen projects, encompassing a total of 388 classes, we further refi
 \label{sec:test_case_generation}
 \vspace{0.1 cm}
 
-Our tool is designed to enhance existing test cases by focusing on improving assertions. To achieve this, we require one or more test suites, and for our research, we've opted to use EvoSuite. EvoSuite\cite{noauthor_evosuite_nodate} is a sophisticated tool specifically tailored for automatically generating test cases with assertions for Java code. It employs a unique hybrid approach that not only generates but also optimizes entire test suites to fulfill specific coverage criteria. These criteria guide the tool in producing comprehensive test suites that effectively cover the targeted code. EvoSuite doesn't stop at merely generating tests; it goes a step further by suggesting potential oracles for these test cases. Oracles, in this context, are sets of assertions strategically added to succinctly summarize the current behavior of the code. These assertions serve a crucial role—enabling developers to identify deviations from expected behavior and capturing the existing behavior to safeguard against potential defects in the future.
-
-For our study, we utilized EvoSuite to generate automated test cases for each of the selected classes. We adhered to the default configurations of EvoSuite, setting the search budget to 15 and opting not to minimize. We generated 9 Test Suites with a total of 138 test cases. The generated test suites for each class are outlined in Table \ref{tab:evosuite_testclasses}.
+For our experiments, we utilized EvoSuite to generate automated test cases for each of the selected classes. We adhered to the default configurations of EvoSuite, setting the search budget to 15 and opting not to minimize. We generated 9 Test Suites with a total of 138 test cases. The generated test suites for each class are outlined in Table \ref{tab:evosuite_testclasses}.
 
 \begin{table}
     \centering    
@@ -96,124 +94,7 @@ For our study, we utilized EvoSuite to generate automated test cases for each of
 \caption{Summary of EvoSuite generated test classes.}
 \label{tab:evosuite_testclasses}
 \end{table}
-
-\vspace{0.1 cm}
-\subsection{Metadata Extraction}
-\label{sec:data_extraction}
-\vspace{0.1 cm}
-
-This step involves parsing each project to extract essential information about classes and methods, along with their associated metadata. Once this information is obtained, our focus shifts to identifying test classes and establishing their connections with corresponding focal classes. This pivotal step ensures that we precisely match each test class with its relevant counterpart. Following the identification of test classes and their associations, we move on to a crucial mapping process. For every test case within a test class, we meticulously map it to the corresponding focal method. This meticulous mapping results in a comprehensive set of mapped test cases, forming the foundation for subsequent stages in our methodology.
-
-\begin{itemize}
-  \item \textbf{Parsing:} In the parsing phase, we thoroughly analyze each project using the tree-sitter parser\cite{noauthor_tree-sitterintroduction_nodate}. This process involves extracting valuable metadata linked to the identified classes and methods within the project. The collected information encompasses crucial details like class names, signatures, super class, bodies, annotations, interfaces, package, imports, fields, arguments list, constructors, dependencies and variables, method names, return types, any developer written comments. This parsed code serves a dual purpose: firstly, to pinpoint test cases and their corresponding focal methods, and secondly, to enhance the focal methods by incorporating focal context information.
-                                
-  \item \textbf{Identify Test Classes:} In this stage, our goal is to locate all the test classes within the project. Test classes are those classes housing at least one method annotated with the \textit{\textbf{@Test}} annotation. This specific annotation serves as an indicator to JUnit, signaling that the attached method is eligible to be executed as a test case. By identifying and marking classes in this manner, we establish a clear distinction between regular classes and those instrumental to the testing process. This categorization allows a systematic approach to handling test-related components.
-
-  \item \textbf{Identify Focal Classes:} Identifying Focal Classes involves determining the class under test for each test class. We employ a two-step approach using the following heuristics:
-        \begin{enumerate}
-            \item \textbf{Extracting Class Instances:} The initial heuristic involves analyzing each test method to identify all the classes instantiated or any objects created during the testing process.
-            \item \textbf{Matching Class Names:} Subsequently, we employ name matching as the second heuristic. Test classes typically follow a naming convention that includes the name of the focal class, often with a \textit{"Test"} prefix or suffix. For instance, a test class associated with the \textit{"BaseSettings.java"} class might be named \textit{"BaseSettingsTest.java"} or, in the case of Evosuite, \textit{"BaseSettings\_ESTest.java."} To identify the focal class, we perform name matching by comparing the name of the test class (minus the optional \textit{"\_ESTest"} suffix) with potential focal classes. This step ensures a robust association between test classes and their corresponding focal classes.
-        \end{enumerate}
-
-  \item \textbf{Identify Focal Method:} Determining the focal method for each test case involves employing specific heuristics. 
-  \begin{enumerate}
-      \item \textbf{Matching Method Names:} This heuristic leverages the common practice of naming test cases similarly to their corresponding focal methods. This involves matching test case names with focal methods, considering potential prefixes or suffixes like "Test."
-      \item \textbf{Analyzing Method Invocations:} Additionally, this heuristic is applied if the initial method doesn't identify a focal method. We try to match the last method invocation before (or within) the assert statement within the test case and the methods defined in the focal class. If a match is found, it is selected as the focal method. We also collect other method invocations as it might be useful to prepare the focal context. This approach is grounded in the confidence gained from prior matching of the test class to the focal class, making it likely that the test case is specifically targeting that single method.
-  \end{enumerate}
-
-  Following these heuristics, we obtain a set of test cases paired with their corresponding focal class and focal methods. Test cases where we couldn't identify the focal method using our heuristics are excluded from further consideration.
-  
-\end{itemize}
-
-\section{Preprocessing}
-\label{sec:preprocessing}
-\vspace{0.2 cm}
-
-The EvoOracle's prompt processor component employs a two-step approach using specific heuristics to preprocess test cases, ensuring they are appropriately prepared for prompt generation. We used the regex pattern shown in Listing~\ref{assertions_regex} for both the following steps:
-
-    \begin{enumerate}
-        \item \textbf{Removal of Assertions:} All selected test cases undergo the removal of assertions, retaining only the last assertion in case there are multiple assertions using Algorithm~\ref{algorithm_remove_assertion}. This decision is based on the likelihood that reaching the last assertion implies satisfaction of all preceding assertions. This is a reasonable choice which is also seen in the work of Tufano et al. \cite{tufano_generating_2022}. The purpose is to streamline the test cases for further processing.
-
-        \item \textbf{Placeholder Insertion:} Following the removal of additional assertions, the test cases are left with a single assertion. We replace this single assertion with \textit{"\_\_ASSERTION\_PLACEHOLDER\_\_"} placeholder using Algorithm~\ref{algorithm_placeholder_insertion}. This placeholder serves as a temporary marker and will be subsequently replaced with assertions generated by the Large Language Models.
-    \end{enumerate}
-
-    %Assertion selection Regex highlighting
-    \hrule
-    \begin{lstlisting}[language=Python, caption=Assertion selection Regex, label=assertions_regex]
-    assertion_patterns = [
-        r'(\w+\.)?assert\s*\(.+?\);',           # ClassName.assert(...)
-        r'(\w+\.)?assertTrue\s*\(.+?\);',       # ClassName.assertTrue(...)
-        r'(\w+\.)?assertNull\s*\(.+?\);',       # ClassName.assertNull(...)
-        r'(\w+\.)?fail\s*\(.+?\);',             # ClassName.fail(...)
-        r'(\w+\.)?assertFalse\s*\(.+?\);',      # ClassName.assertFalse(...)
-        r'(\w+\.)?assertNotEquals\s*\(.+?\);',  # ClassName.assertNotEquals(...)
-        r'(\w+\.)?assertEquals\s*\(.+?\);',     # ClassName.assertEquals(...)
-        r'(\w+\.)?assertArrayEquals\s*\(.+?\);',# ClassName.assertArrayEquals(...)
-        r'(\w+\.)?assertNotNull\s*\(.+?\);',    # ClassName.assertNotNull(...)
-        r'(\w+\.)?assertNotSame\s*\(.+?\);',    # ClassName.assertNotSame(...)
-        r'(\w+\.)?assertSame\s*\(.+?\);',       # ClassName.assertSame(...)
-        r'(\w+\.)?assertThat\s*\(.+?\);',       # ClassName.assertThat(...)
-    ]
-    \end{lstlisting}
-    \hrule
     
-    \begin{algorithm}[H]
-    \caption{Algorithm for \texttt{Removing all assertions but last}}
-    \label{algorithm_remove_assertion}
-    \begin{algorithmic}[1]
-    \Function{remove\_all\_assertions\_but\_last}{$\text{source\_code}$}
-        \State $\text{assertion\_patterns} \gets$ [\texttt{...}] \Comment{List of assertion patterns}
-        \State $\text{assertions} \gets \text{re.findall(assertion\_pattern, source\_code)}$
-    
-        \If{\text{not assertions}}
-            \State \textbf{return} $\text{source\_code}$
-        \EndIf
-    
-        \State $\text{replaced\_assertions} \gets []$
-    
-        \For{$i$ \textbf{in} \text{range}(\text{len(assertions) - 1})}
-            \State $\text{source\_code} \gets \text{re.sub(assertion\_pattern, "", source\_code, count=1)}$
-            % \State $\text{replaced\_assertions.append(assertions[i][0] + assertions[i][1] + "();")}$  % Uncomment this line if you want to keep track of removed assertions
-        \EndFor
-    
-        \State \textbf{return} $\text{source\_code}$
-    \EndFunction
-    \end{algorithmic}
-    \end{algorithm}
-
-    \begin{algorithm}
-    \caption{Algorithm for \texttt{Placeholder insertion}}
-    \label{algorithm_placeholder_insertion}
-    \begin{algorithmic}[1]
-    \Function{replace\_assertions}{$\text{source\_code}$}
-        \State $\text{assertion\_patterns} \gets$ [\texttt{...}] \Comment{List of assertion patterns}
-        \State $\text{replaced\_assertions} \gets$ [] \Comment{List to store replaced assertions}
-    
-        \For{$\text{pattern}$ \textbf{in} $\text{assertion\_patterns}$}
-            \Function{replacement}{$\text{match}$}
-                \State $\text{matched\_text} \gets \text{match.group(0)}$
-                \State $\text{replaced\_assertions.append(matched\_text)}$
-                \State \textbf{return} \texttt{(ASSERTION\_PLACEHOLDER)}
-            \EndFunction
-    
-            \State $\text{source\_code} \gets \text{re.sub(pattern, replacement, source\_code)}$
-        \EndFor
-    
-        \State \textbf{return} $\text{source\_code, replaced\_assertions}$
-    \EndFunction
-    \end{algorithmic}
-    \end{algorithm}
-        
-\section{Large Language Model Integration}
-\label{sec:llm_integration}
-\vspace{0.2 cm}
-
-To improve the Oracles generated by the automated test generation tools, we propose the inclusion of LLMs into the test generation process. Recognizing that LLMs typically demand substantial resources and powerful hardware, we opted to leverage GPT4All~\cite{noauthor_gpt4all_nodate} to make this solution accessible to developers on standard development machines. For the processing of prompts and connecting a language model to sources of context (prompt instructions, few shot examples, content to ground its response in, etc.) we use an open source framework called LangChain\cite{langchain}.
-
-\textbf{GPT4All:} The GPT4All~\cite{noauthor_gpt4all_nodate} project, initiated by Nomic AI, seeks to provide widespread access to Large Language Models by enabling training and deployment on common hardware. This open-source ecosystem facilitates the integration of LLMs into applications without the need for costly platform subscriptions or specialized hardware. Notably, GPT4All addresses accessibility by providing pretrained models with reduced sizes, ensuring they can operate efficiently on CPUs, even on PCs lacking internet connectivity or a GPU. This innovation allows smaller entities and independent researchers to harness LLMs for various applications, such as content creation, coding, document comprehension, and information retrieval. With a user-friendly one-click installer, GPT4All streamlines the process, making LLM utilization feasible on modern PCs with 4–16GB of RAM, a substantial reduction compared to traditional requirements, thanks to neural network quantization~\cite{han_deep_2016}.
-
-\textbf{LangChain:} LangChain\cite{langchain} stands as a versatile framework designed to empower the creation of applications driven by language models. It simplifies the process of building and training Large Language Models (LLMs) through a user-friendly interface. LangChain goes a step further by offering a selection of ready-to-use models tailored for different natural language processing tasks. Beyond modeling, it provides handy tools for tasks like data preprocessing, model evaluation, and the deployment of applications, offering a comprehensive solution for language-driven application development.
-
 \vspace{0.1 cm}
 \subsection{LLM Selection and Configuration}
 \label{sec:llm_configurations}
@@ -245,9 +126,6 @@ In the preliminary phase of our experimentation, we conducted local trials with 
 \label{sec:prompt_preparation}
 \vspace{0.1 cm}
 
-In the critical phase of prompting the Large Language Models for assertion generation, we employ a meticulous approach. To facilitate this process, we construct prompt templates using the versatile Jinja2\cite{noauthor_jinja_nodate}
-template format. The essence lies in creating a focal context tailored for each Class Under Test (CUT) and its corresponding Method Under Test (MUT). These templates serve as the foundation for replacing the contextual placeholders with the specific contexts of interest. This dynamic approach ensures that the LLMs receive targeted and meaningful prompts, enhancing their understanding of the given code context and enabling them to generate assertions with precision. The use of Jinja2 templates not only streamlines the prompt generation process but also allows for flexibility and adaptability in accommodating diverse code structures across different classes and methods.
-
 Before settling on our final approach for effective assertion generation, we conducted a series of preliminary experiments. The goal was to refine our prompt strategy, ensuring that it aligns optimally with the intricacies of the code context. After careful consideration and evaluation, we arrived at a well-crafted prompt, which is detailed in Listing~\ref{prompt_template}. This strategic decision to leverage a specific prompt stems from the insights gained through experimentation, aiming to enhance the clarity and relevance of instructions provided to the Large Language Models (LLMs). Our iterative process of refining prompts has been instrumental in shaping an approach that maximizes the LLMs' understanding of code contexts and subsequently improves the precision of assertion generation.
 
 \begin{lstlisting}[style=llm_prompt, label=prompt_template, caption=Prompt Template]
@@ -272,67 +150,6 @@ Assertion must end with ```;```
 ### Response:
 \end{lstlisting}
 
-To create effective prompts for the Large Language Models, we gather information to build the context for a test case that we prepared in the preprocessing phase (as detailed in Section~\ref{sec:preprocessing}). This information includes key details about the class under test, methods under test, and various method attributes such as Constructor signature, Class Signature, parameters, Invoked Method Signature, dependencies, return type, developer comments, source code for the test case, package, imports, Fields, and getter/setter signature. We carefully consider all invoked methods and dependencies encapsulated within the test case. In instances where the LLM response faces challenges such as token limit exceeds, we dynamically adjust the context size.
-
-We follow an iterative process as shown in Algorithm~\ref{algorithm_prompt_generation} of generating prompts for the LLM, involving multiple rounds. Each round refines the prompt based on the LLM's response and aims to address potential challenges like token limit exceedance. The trimming process, controlled by conditional statements, adjusts the size of critical elements such as method details and test method code. This adaptive approach ensures that the prompt remains concise while retaining essential contextual information. The code systematically handles different trimming scenarios in each round, progressively refining the prompt to strike a balance between informativeness and LLM response feasibility. The overall mechanism involves generating messages from prompt templates, seeking LLM responses, and dynamically adjusting the prompt for subsequent iterations, all of which contribute to an effective and tailored interaction with the LLM.
-
-% \begin{algorithm}
-%     \caption{Prompt Generation Algorithm}
-%     \label{algorithm_prompt_generation}
-%     \begin{algorithmic}[1]
-%         \Function{generate\_prompt}{$\text{context}$}
-%             \State $\text{rounds}, \text{max\_attempts}, \text{prompt\_template} \gets 0, 3, \text{...}$
-%             \State $\text{prompts\_and\_responses} \gets []$
-            
-%             \While{$\text{rounds} < \text{max\_attempts}$}
-%                 \State $\text{steps}, \text{rounds} \gets 0, \text{rounds} + 1$
-%                 \If{$\text{rounds} > 2$}
-%                     \State $\text{trimmed\_context} \gets \text{trim\_context(context, 3)}$
-%                 \EndIf
-                
-%                 \If{$\text{rounds} > 1$}
-%                     \State $\text{trimmed\_context} \gets \text{trim\_context(context, 5)}$
-%                 \EndIf
-                
-%                 \State $\text{messages} \gets \text{generate\_messages(prompt\_template, trimmed\_context)}$
-                
-%                 \State $\text{llm\_result} \gets \text{ask\_openLLM(messages)}$
-%                 \State $\text{prompts\_and\_responses.append(\{"prompt": messages, "response": llm\_result\})}$
-                
-%                 \State $\text{source\_code, replaced\_assertions} \gets \text{replace\_assertions(source\_code)}$
-                
-%                 \If{$\text{assertions}$}
-%                     \State $\text{context} \gets \text{update\_prompt\_and\_ask\_again(context)}$
-%                 \EndIf
-%             \EndWhile
-            
-%             \State $\text{print\_and\_save\_results(prompts\_and\_responses)}$
-%         \EndFunction
-%     \end{algorithmic}
-% \end{algorithm}
-
-Throughout each iteration, we analyze LLM responses to capture assertions using the specified Assertion regex, as outlined in Listing~\ref{assertions_regex}. When the parsing operation successfully identifies an assertion, we advance to the subsequent phase of crafting the test case with EvoOracle assertion. In cases where the assertion parsing is unsuccessful, we continue the iteration process until we reach the budget limit specified in the configuration. 
-
-\section{Test Case Preparation}
-\label{sec:test_case_preparation}
-\vspace{0.2 cm}
-
-At this stage, when an Oracle is successfully generated, we proceed by taking the previously prepared test case with a placeholder, as explained in Section~\ref{sec:preprocessing}, and substitute that placeholder with the newly generated assertion. In the preprocessing stage, we had removed all the assertions except the last one. Therefore, from the response obtained from the LLM, we only consider the last assertion as well. Once the replacement is complete, we attempt to compile and run this modified test case. If both operations are successful, we mark this test case as final. However, if any of these operations fail, we revert to the previous step of asking the LLM for another round with an updated prompt to continue refining the test case until success is achieved.
-
-\vspace{0.1 cm}
-\subsection{Mutation Testing Execution}
-\label{sec:mutation_testing_execution}
-\vspace{0.1 cm}
-
-To evaluate the generated tests, we use PIT\cite{noauthor_pit_nodate}. PIT is a mutation testing tool that evaluates the robustness of a test suite by introducing mutations (faults) into the source code and assessing whether the tests can detect these mutations.
-
-\vspace{0.1 cm}
-\subsection{Report Parsing}
-\label{sec:report_parsing}
-\vspace{0.1 cm}
-
-When we execute mvn pit test, it triggers the generation of Mutation Coverage reports as artifacts. These reports provide valuable insights into the effectiveness of our test suite. To extract meaningful information, we begin by parsing the HTML reports generated by PIT. By parsing the HTML reports, we extract detailed information on line coverage, mutation coverage, and test strength for all tests associated with a particular class. This information is essential for evaluating the thoroughness and fault-detection capability of our test suite.
-
 \section{Experimental Setup}
 \label{sec:experimental_setup}
 \vspace{0.2 cm}
@@ -349,7 +166,7 @@ TC = Test Cases\\
 M = Models\\
 OT = Oracle Type\\
 R = Repetitions\\
-
+After the generation of oracles and completion of the execution process, we conduct an evaluation by scrutinizing various output files and logs. This analysis encompasses examination of build logs, test execution outputs, and coverage files.
 \noindent
 We conducted experiments by considering two variants of Oracle type, 
 \begin{enumerate}
@@ -360,7 +177,7 @@ We conducted experiments by considering two variants of Oracle type,
 \subsection{Evaluation Metrics}
 \label{sec:evaluation_metrics}
 \vspace{0.1 cm}
-We consider several quantitative measures used to assess and evaluate different aspects of our experimental results. These metrics provide a systematic and standardized way to gauge the performance, efficiency, and effectiveness of our proposed approach. They serve as numerical indicators that help us draw meaningful conclusions about the capabilities and limitations of our solution in the realm of automated test oracle generation using Large Language Models.
+After the generation of oracles and completion of the execution process, we conduct an evaluation by analyzing various output files and logs. This analysis encompasses examination of build logs, test execution outputs, and coverage files. We consider several quantitative measures used to assess and evaluate different aspects of our experimental results. These metrics provide a systematic and standardized way to gauge the performance, efficiency, and effectiveness of our proposed approach. They serve as numerical indicators that help us draw meaningful conclusions about the capabilities and limitations of our solution in the realm of automated test oracle generation using Large Language Models.
 
     \begin{enumerate}
         \item \textbf{Coverage Metrics:}
@@ -382,55 +199,16 @@ LC = \frac{\text{{Number of Covered Lines}}}{\text{{Total Number of Lines}}}
         \end{itemize}
     \end{enumerate}
 
-    In addition to coverage, we present five additional metrics to quantify the number of test cases at specific stages of the pipeline:
+    In addition to coverage, we present four additional metrics to quantify the number of test cases at specific stages of the pipeline:
 
     \begin{enumerate}
-        \item \textbf{Unique:} Count of test cases after removing duplicates.
-        \item \textbf{Syntax Error:} Number of tests that do not have syntax errors. Meaning, the count of test cases adhering to the Java grammar, measured both absolutely and relative to the Unique count.
+        \item \textbf{Syntax Correctness:} Number of tests that do not have syntax errors. Meaning, the count of test cases adhering to the Java grammar.
         \item \textbf{Compilable:} The tests count that have correct syntax and do not fail during build. Count of test cases that successfully compiled in their scaffolding without errors, measured both absolutely and relative to the Unique count.
-        \item \textbf{Executable:} Count of test cases that were executed without errors, measured both absolutely and relative to the Unique count.
-        \item \textbf{Correct:} Count of test cases that were executed without errors and invoked the correct Method Under Test (MUT), measured both absolutely and relative to the Unique count. 
+        \item \textbf{Failing Test:} The test builds successfully but fails due to wrong assertions or expected behavior.
+        \item \textbf{Passing Test:} The test builds and passes successfully;
+        \item \textbf{Correct:} Count of test cases that were compiled and executed without errors and invoked the correct Method Under Test (MUT), measured both absolutely and relative to the Unique count. 
     \end{enumerate}
-    This metric is adopted from Tufano et al. \cite{tufano_unit_2021} which provides comparability on different repositories.
-
-\begin{table}
-\centering
-
-\begin{tabular}{| l | l | l | l | l | l | l |}
-\hline
-\textbf{class} & \textbf{EvoSuite} & \textbf{mpt} & \textbf{nous} & \textbf{ocra} & \textbf{vicuna} & \textbf{wizlm} \\
-\hline
-BaseSettings & 53.33 & 52.85428571 & 47.61714286 & 40.63285714 & 52.37857143 & 34.11142857 \\
-\hline
-CacheHandler & 71.43 & 69.38857143 & 66.53142857 & 42.17571429 & 71.43 & 71.43 \\
-\hline
-NPMInstaller & 71.43 & 68.71 & 65.98571429 & 25.92666667 & 71.43 & 57.14285714 \\
-\hline
-NodeInstaller & 100 & 100 & 100 & 94.47857143 & 100 & 41.61142857 \\
-\hline
-Parallel & 100 & 57.14285714 & 57.32714286 & 32.275 & 54.94714286 & 56.59571429 \\
-\hline
-PnpmInstaller & 70.59 & 70.59 & 70.59 & 11.48 & 70.59 & 59.83428571 \\
-\hline
-PropertiesProviderUtils & 66.67 & 66.67 & 66.67 & 57.14428571 & 66.67 & 66.67 \\
-\hline
-SeekableByteArrayOutputStream & 93.75 & 89.28571429 & 91.96428571 & 45.454 & 93.75 & 44.75857143 \\
-\hline
-ZerocodeCorrelationshipLogger & 55 & 52.14285714 & 52.14285714 & 59.52428571 & 55 & 54.66142857 \\
-\hline
-
-\end{tabular}
-
-\end{table}
-
-
-\textbf{TODO\cite{}}
-After the execution phase, we perform the evaluation by analyzing multiple output files and logs, including build logs, test execution outputs, and coverage files. We classify each candidate test case tc into these categories: 
-• Syntax Error: the test has syntax errors; 
-• Build Error: the test has correct syntax but fails to build; 
-• Failing Test: the test builds but fails due to wrong assertions or expected behavior; 
-• Passing Test: the test builds and passes; 
-• Correct Test: the test passes and covers the correct focal method; The first four categories are mutually exclusive, that is a tc can either be classified in Syntax Error or Failed Build and so on, while the last category (Correct Test) represents a more stringent subset of the Passing Test one. Specifically, we consider a test case tc to be correct only if it builds properly, executes without failing, and covers the correct focal method given as input.
+    This metric is adopted from Tufano et al. \cite{tufano_unit_2021} which provides comparability across different repositories.
 
 \section{Research Questions}
 \label{sec:research_questions}
@@ -438,19 +216,32 @@ After the execution phase, we perform the evaluation by analyzing multiple outpu
 
 In this section, we will discuss the research questions. We set out to answer with our experiments:
 \begin{itemize}
-    \item \textbf{RQ1:} How does the performance of LLM-generated assertions compare to assertions generated by traditional automated test generation tools, such as EvoSuite?
-
-    \item \textbf{RQ2:} How does the performance of traditional automated test generation tools, such as EvoSuite change if they are complemented with LLM-generated assertions?
+    \item \textbf{RQ1: How is the quality of the EvoOracle generated Oracles?}\\
+    In examining the quality of EvoOracle-generated Oracles, we assess the following metrics:
+    \begin{itemize}
+        \item Syntax Correctness
+        \item Compilable
+        \item Failing Test
+        \item Passing Test
+        \item Correct
+    \end{itemize}
+    In addition to quantitative metrics, qualitative examination involves manual analysis of correct and failing tests. Through this comprehensive evaluation, we aim to provide a nuanced understanding of the EvoOracle-generated Oracles' quality, combining quantitative rigor with qualitative insights.
     
-    \item \textbf{RQ3:} How many attempts it usually takes to generate attempts? Is it worth repeating?
-    \textbf{MAKE IT BETTER.}
-
-    \item \textbf{RQ4:} Context size, dependency thing, How many methods were fed for prompt?
-    \textbf{MAKE IT BETTER.}
+    \item \textbf{RQ2: How does the performance of EvoOracle generated assertions compare to assertions generated by traditional automated test generation tool, EvoSuite?}\\
+    To assess the comparative performance, we employ mutation testing on the test suites generated by both EvoOracle and EvoSuite. We use mutation coverage, test strength and line coverage to evaluate the performance of both tool.
     
-    \item \textbf{RQ5:} To what extent can LLMs generalize across different software projects and programming paradigms when generating test assertions?
+    \item \textbf{RQ3: How does the performance of EvoSuite change if they are complemented with EvoOracle generated assertions?}\\
+    Instead of replacing the asserions in EvoSuite, we enhance the them by adding the EvoOracle generated assertions to them. Then we run mutation testing again to see how the EvoOracle enahance EvoSuite tests compare against the individual EvoSuite and EvoOracle.
     
-    \item \textbf{RQ6:} To what extent is the proposed LLM-based assertion generation approach suitable for real-world software development workflows? What are the challenges and practical considerations?
+    \item \textbf{RQ4: How many attempts are typically needed for successful assertion generation, and does the success rate improve with additional attempts following initial failure?}\\
+    This research question aims to understand the efficiency of assertion generation by quantifying the number of attempts required for success. The measurement involves tracking the count of attempts made for assertion generation during the experimental process. To answer this question, we analyze the success and failure instances, categorizing them based on the number of attempts made. By examining the patterns of successful assertion generation over multiple attempts, we gain insights into the effectiveness of iterative prompting and identify whether additional attempts contribute to increased success rates. This exploration helps evaluate the practicality and reliability of the assertion generation process, guiding developers on optimal strategies when dealing with failed attempts.
+    
+    \item \textbf{RQ5: How well-suited is the proposed LLM-based assertion generation approach for practical integration into real-world software development workflows, and what challenges and practical considerations arise from its implementation?}\\
+    We analyze the time consumed by the tool to generate assertions.
+    % \item \textbf{RQ5:} Context size, dependency thing, How many methods were fed for prompt?
+    % \textbf{MAKE IT BETTER.}
+    
+    % \item \textbf{RQ6:} To what extent can LLMs generalize across different software projects and programming paradigms when generating test assertions?
 \end{itemize}
 
 \section{Results}
@@ -477,77 +268,77 @@ In this subsection, an overview of ...
  &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{BaseSettings} & \textbf{53.33\%*} & 34.29\% & 42.86\% & 32.29\% & 48.43\% & 26.60\% \\
+\scriptsize\textsc{BaseSettings} & \textbf{53.33\%} & 34.29\% & 42.86\% & 32.29\% & 48.43\% & 26.60\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{CacheHandler} & \textbf{27.78\%*} & 0.00\% & 1.57\% & 0.00\% & 0.00\% & 0.00\% \\
+\scriptsize\textsc{CacheHandler} & \textbf{27.78\%} & 0.00\% & 1.57\% & 0.00\% & 0.00\% & 0.00\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%*} & 3.29\% & 15.00\% & 0.00\% & 0.00\% & 0.00\% \\
+\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%} & 3.29\% & 15.00\% & 0.00\% & 0.00\% & 0.00\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%*} & 39.60\% & 45.14\% & 23.33\% & 0.00\% & 5.14\% \\
+\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%} & 39.60\% & 45.14\% & 23.33\% & 0.00\% & 5.14\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100\%*} & 26.00\% & 50.57\% & 31.00\% & 31.57\% & 52.86\% \\
+\scriptsize\textsc{Parallel} & \textbf{100\%} & 26.00\% & 50.57\% & 31.00\% & 31.57\% & 52.86\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%*} & 13.00\% & 17.00\% & 0.00\% & 2.14\% & 5.50\% \\
+\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%} & 13.00\% & 17.00\% & 0.00\% & 2.14\% & 5.50\% \\
 \hline
 \scriptsize\textsc{Properties} &  &  &  &  &  &  \\
-\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%*} & 16.43\% & 12.57\% & 12.57\% & 19.00\% & 13.43\% \\
+\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%} & 16.43\% & 12.57\% & 12.57\% & 19.00\% & 13.43\% \\
 \hline
 \scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%*} & 1.50\% & 57.29\% & 22.00\% & 31.00\% & 19.83\% \\
+\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%} & 1.50\% & 57.29\% & 22.00\% & 31.00\% & 19.83\% \\
 \hline
 \scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
 \scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
-\scriptsize\textsc{Logger} & \textbf{52.38\%*} & 17.67\% & 28.71\% & 19.33\% & 27.57\% & 28.86\% \\
+\scriptsize\textsc{Logger} & \textbf{52.38\%} & 17.67\% & 28.71\% & 19.33\% & 27.57\% & 28.86\% \\
 \hline
 
 \end{tabular}
 \caption{Average Mutation Coverage by Class and Models.\protect\footnotemark}
 \label{tab:mutation_coverage}
 \end{table}
-\footnotetext{Significant values are highlighted with bold fonts and asterisk.}
+\footnotetext{Significant values are highlighted with bold fonts.}
 
 \begin{table}[H]
 \centering
 
 \begin{tabular}{| l | r | r | r | r | r | r |}
 \hline
-\multirow{2}{*}{\textbf{Class}} & \multirow{2}{*}{\textbf{EvoSuite}} & \multicolumn{5}{c|}{\textbf{EvoOracle}} \\ % Fix multicolumn formatting
+\multirow{2}{*}{\textbf{Class}} & \multirow{2}{*}{\textbf{EvoSuite}} & \multicolumn{5}{c|}{\textbf{EvoSuite + EvoOracle}} \\ % Fix multicolumn formatting
 \cline{3-7} % Add a horizontal line between the headers
  &  & \textbf{MPT-7B} & \textbf{Nous} & \textbf{Orca} & \textbf{Stable} & \textbf{WizardLM} \\
  &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{BaseSettings} & \textbf{53.33\%*} & 52.38\% & 47.62\% & 38.09\% & 52.38\% & 31.43\% \\
+\scriptsize\textsc{BaseSettings} & \textbf{53.33\%} & 52.38\% & 47.62\% & 38.09\% & 52.38\% & 31.43\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{CacheHandler} & \textbf{27.78\%*} & 26.99\% & 23.02\% & 15.87\% & \textbf{27.78\%*} & \textbf{27.78\%*}  \\
+\scriptsize\textsc{CacheHandler} & \textbf{27.78\%} & 26.99\% & 23.02\% & 15.87\% & \textbf{27.78\%} & \textbf{27.78\%}  \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%*} & 32.79\% & 31.50\% & 4.92\% & \textbf{34.09\%*} & 25.97\%  \\
+\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%} & 32.79\% & 31.50\% & 4.92\% & \textbf{34.09\%} & 25.97\%  \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%*} & 55.66\% & 50.49\% & 42.61\% & \textbf{56.90\%*} & 6.65\%  \\
+\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%} & 55.66\% & 50.49\% & 42.61\% & \textbf{56.90\%} & 6.65\%  \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100\%*} & 52.75\% & 55.50\% & 30.77\% & 54.95\% & 56.60\%  \\
+\scriptsize\textsc{Parallel} & \textbf{100\%} & 52.75\% & 55.50\% & 30.77\% & 54.95\% & 56.60\%  \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%*} & \textbf{29.27\%*} & \textbf{29.27\%*} & 2.09\% & \textbf{29.27\%*} & 16.37\%  \\
+\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%} & \textbf{29.27\%} & \textbf{29.27\%} & 2.09\% & \textbf{29.27\%} & 16.37\%  \\
 \hline
 \scriptsize\textsc{Properties} &  &  &  &  &  &  \\
-\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%*} & \textbf{26.67\%*} & \textbf{26.67\%*} & 22.86\% & \textbf{26.67\%*} & \textbf{26.67\%*}  \\
+\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%} & \textbf{26.67\%} & \textbf{26.67\%} & 22.86\% & \textbf{26.67\%} & \textbf{26.67\%}  \\
 \hline
 \scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%*} & 89.29\% & 91.96\% & 25.00\% & \textbf{93.75\%} & 41.96\%  \\
+\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%} & 89.29\% & 91.96\% & 25.00\% & \textbf{93.75\%} & 41.96\%  \\
 \hline
 \scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
 \scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
-\scriptsize\textsc{Logger} & \textbf{52.38\%*} & 48.30\% & 49.66\% & 35.37\% & \textbf{52.38\%*} & 51.70\%  \\
+\scriptsize\textsc{Logger} & \textbf{52.38\%} & 48.30\% & 49.66\% & 35.37\% & \textbf{52.38\%} & 51.70\%  \\
 \hline
 
 \end{tabular}
@@ -555,7 +346,7 @@ In this subsection, an overview of ...
 \label{tab:mutation_coverage}
 \end{table}
 
-\footnotetext{Significant values are highlighted with bold fonts and asterisk.}
+\footnotetext{Significant values are highlighted with bold fonts.}
 \begin{table}[H]
 \centering
 
@@ -567,32 +358,32 @@ In this subsection, an overview of ...
  &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{BaseSettings} & \textbf{53.33\%*} & 36.14\% & 43.29\% & 33.86\% & 48.43\% & 26.60\% \\
+\scriptsize\textsc{BaseSettings} & \textbf{53.33\%} & 36.14\% & 43.29\% & 33.86\% & 48.43\% & 26.60\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{CacheHandler} & \textbf{71.43\%*} & 0.00\% & 5.71\% & 0.00\% & 0.00\% & 0.00\% \\
+\scriptsize\textsc{CacheHandler} & \textbf{71.43\%} & 0.00\% & 5.71\% & 0.00\% & 0.00\% & 0.00\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & 71.43\% & 93.71\% & 85.67\% & \textbf{100\%*} & \textbf{100\%*} & \textbf{100\%*} \\
+\scriptsize\textsc{NPMInstaller} & 71.43\% & 93.71\% & 85.67\% & \textbf{100\%} & \textbf{100\%} & \textbf{100\%} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{100\%*} & 91.60\% & 98.29\% & 69.00\% & 0.00\% & 98.71\% \\
+\scriptsize\textsc{NodeInstaller} & \textbf{100\%} & 91.60\% & 98.29\% & 69.00\% & 0.00\% & 98.71\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100\%*} & 29.00\% & 52.86\% & 31.00\% & 33.43\% & 54.86\% \\
+\scriptsize\textsc{Parallel} & \textbf{100\%} & 29.00\% & 52.86\% & 31.00\% & 33.43\% & 54.86\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & 70.59\% & 55.29\% & 54.33\% & 57.14\% & \textbf{100\%*} & 48.75\% \\
+\scriptsize\textsc{PnpmInstaller} & 70.59\% & 55.29\% & 54.33\% & 57.14\% & \textbf{100\%} & 48.75\% \\
 \hline
 \scriptsize\textsc{Properties} &  &  &  &  &  &  \\
-\scriptsize\textsc{ProviderUtils} & \textbf{66.67\%*} & 45.43\% & 40.29\% & 40.29\% & 47.57\% & 34.57\% \\
+\scriptsize\textsc{ProviderUtils} & \textbf{66.67\%} & 45.43\% & 40.29\% & 40.29\% & 47.57\% & 34.57\% \\
 \hline
 \scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & 93.75\% & 5.00\% & 64.29\% & 66.50\% & \textbf{100\%*} & 37.83\% \\
+\scriptsize\textsc{ArrayOutputStream} & 93.75\% & 5.00\% & 64.29\% & 66.50\% & \textbf{100\%} & 37.83\% \\
 \hline
 \scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
 \scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
-\scriptsize\textsc{Logger} & \textbf{55\%*} & 25.33\% & 33.29\% & 44.83\% & 34.29\% & 41.43\% \\
+\scriptsize\textsc{Logger} & \textbf{55\%} & 25.33\% & 33.29\% & 44.83\% & 34.29\% & 41.43\% \\
 \hline
 
 \end{tabular}
@@ -611,39 +402,39 @@ In this subsection, an overview of ...
  &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{BaseSettings} & \textbf{100\%*} & 92.71 & 98.86 & 92.71 & 99.43 & 64.40 \\
+\scriptsize\textsc{BaseSettings} & \textbf{100\%} & 92.71 & 98.86 & 92.71 & 99.43 & 64.40 \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{CacheHandler} & \textbf{51.52\%*} & 0.00 & 43.71 & 39.60 & 0.00 & 36.00 \\
+\scriptsize\textsc{CacheHandler} & \textbf{51.52\%} & 0.00 & 43.71 & 39.60 & 0.00 & 36.00 \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & \textbf{46.49\%*} & 10.71 & 23.67 & 6.00 & 6.00 & 6.00 \\
+\scriptsize\textsc{NPMInstaller} & \textbf{46.49\%} & 10.71 & 23.67 & 6.00 & 6.00 & 6.00 \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{53.04\%*} & 38.20 & 40.43 & 26.00 & 0.00 & 5.86 \\
+\scriptsize\textsc{NodeInstaller} & \textbf{53.04\%} & 38.20 & 40.43 & 26.00 & 0.00 & 5.86 \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100\%*} & 69.25 & 90.29 & 98.00 & 83.00 & 91.71 \\
+\scriptsize\textsc{Parallel} & \textbf{100\%} & 69.25 & 90.29 & 98.00 & 83.00 & 91.71 \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & \textbf{41.53\%*} & 25.43 & 34.67 & 7.43 & 4.43 & 17.25 \\
+\scriptsize\textsc{PnpmInstaller} & \textbf{41.53\%} & 25.43 & 34.67 & 7.43 & 4.43 & 17.25 \\
 \hline
 \scriptsize\textsc{Properties} &  &  &  &  &  &  \\
-\scriptsize\textsc{ProviderUtils} & \textbf{57.14\%*} & 45.00 & 45.00 & 38.71 & 57.00 & 53.00 \\
+\scriptsize\textsc{ProviderUtils} & \textbf{57.14\%} & 45.00 & 45.00 & 38.71 & 57.00 & 53.00 \\
 \hline
 \scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & \textbf{100\%*} & 36.25 & 77.57 & 28.00 & 31.00 & 47.00 \\
+\scriptsize\textsc{ArrayOutputStream} & \textbf{100\%} & 36.25 & 77.57 & 28.00 & 31.00 & 47.00 \\
 \hline
 \scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
 \scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
-\scriptsize\textsc{Logger} & \textbf{91.38\%*} & 74.00 & 86.71 & 53.00 & 85.57 & 72.00 \\
+\scriptsize\textsc{Logger} & \textbf{91.38\%} & 74.00 & 86.71 & 53.00 & 85.57 & 72.00 \\
 \hline
 
 \end{tabular}
 \caption{Average Line Coverage by Class and Models.\protect\footnotemark}
 \label{tab:line_coverage}
 \end{table}
-\footnotetext{Significant values are highlighted with bold fonts and asterisk.}
+\footnotetext{Significant values are highlighted with bold fonts.}
 
 \begin{figure}[H]
 \centering
