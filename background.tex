@@ -102,7 +102,10 @@ Historically, test oracles have been constructed manually by human testers, insp
 Automated test generation techniques leverage various algorithms and heuristics\cite{} to generate test cases automatically. These techniques can be categorized into model-based, search-based, and \\
 specification-based approaches. Model-based methods create models of the software's behavior, while search-based approaches explore the input space to find test cases that trigger specific conditions. Specification-based methods rely on formal specifications to guide test case generation.\cite{}
 
-\textbf{The Oracle Problem:}
+\section{The Oracle Problem}
+\label{sec:oracle_problem}
+\vspace{0.2 cm}
+
 In the context of automated testing, the Oracle Problem refers to the challenge of accurately determining expected outcomes. If the criteria for expected behavior are flawed, the automated testing tool may inadvertently accept erroneous behaviors as correct. 
 Software systems are dynamic, subject to frequent updates, enhancements, and modifications. These changes ripple through the entire ecosystem, impacting functionalities and potentially altering expected outcomes. Maintaining a static set of expected outcomes becomes arduous. As the software evolves, the Oracle must dynamically adapt to these changes, requiring a level of agility that traditional testing approaches struggle to achieve. Defining precise criteria for expected behavior in complex software systems is inherently intricate. It involves considering a multitude of variables, interactions, and potential scenarios, often surpassing human capacity for manual formulation. Traditional automated testing tools often rely on predefined algorithms or criteria to determine expected outcomes. Crafting algorithms that encapsulate the nuanced behavior of diverse functionalities poses a considerable technical challenge, especially in scenarios where the desired outcome may not have a deterministic definition. The Oracle must possess adaptability and resilience to handle unforeseen circumstances. Traditional oracles, lacking the ability to dynamically adapt, may falter in scenarios where predefined criteria are insufficient to encompass the entire spectrum of possible outcomes\cite{}.
 

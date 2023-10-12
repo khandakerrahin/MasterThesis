@@ -337,7 +337,7 @@ When we execute mvn pit test, it triggers the generation of Mutation Coverage re
 \label{sec:experimental_setup}
 \vspace{0.2 cm}
 
-For our experimental setup, we conducted the experiments on a dedicated High-Performance Computing (HPC) cluster equipped with four nodes. Each node features Intel Xeon CPU 6226R\cite{noauthor_intel_nodate} processors running at 2.9GHz, with a configuration of 32 CPUs and 16GB of RAM. To ensure consistency and reproducibility, we created a specialized Singularity\cite{noauthor_introduction_nodate} image tailored for our implemented tool, enabling seamless execution on the HPC cluster. This configuration allowed us to leverage the cluster's computational capabilities effectively for our experimentation.
+For our experimental setup, we conducted the experiments on a dedicated High-Performance Computing (HPC) cluster equipped with four nodes. Each node features Intel Xeon CPU 6226R\cite{noauthor_intel_nodate} processors running at 2.9GHz, with a configuration of 32 CPUs and 16GB of RAM. To ensure consistency and reproducibility, we created a specialized Singularity\cite{noauthor_introduction_nodate} image version v3.8.7\cite{noauthor_singularity_releases_nodate} with Java 1.8 and Python 3.10 and all the Python required libraries~\ref{} tailored for our implemented tool, enabling seamless execution on the HPC cluster. This configuration allowed us to leverage the cluster's computational capabilities effectively for our experimentation.
 
 We conducted a total of 9660 experiments, exploring various configurations of test cases, models, oracle types, and repetitions. The distribution of experiments is outlined by the following equation:
 \[
@@ -386,12 +386,51 @@ LC = \frac{\text{{Number of Covered Lines}}}{\text{{Total Number of Lines}}}
 
     \begin{enumerate}
         \item \textbf{Unique:} Count of test cases after removing duplicates.
-        \item \textbf{Parsable:} Count of test cases adhering to the Java grammar, measured both absolutely and relative to the Unique count.
-        \item \textbf{Compilable:} Count of test cases that successfully compiled in their scaffolding without errors, measured both absolutely and relative to the Unique count.
+        \item \textbf{Syntax Error:} Number of tests that do not have syntax errors. Meaning, the count of test cases adhering to the Java grammar, measured both absolutely and relative to the Unique count.
+        \item \textbf{Compilable:} The tests count that have correct syntax and do not fail during build. Count of test cases that successfully compiled in their scaffolding without errors, measured both absolutely and relative to the Unique count.
         \item \textbf{Executable:} Count of test cases that were executed without errors, measured both absolutely and relative to the Unique count.
         \item \textbf{Correct:} Count of test cases that were executed without errors and invoked the correct Method Under Test (MUT), measured both absolutely and relative to the Unique count. 
     \end{enumerate}
     This metric is adopted from Tufano et al. \cite{tufano_unit_2021} which provides comparability on different repositories.
+
+\begin{table}
+\centering
+
+\begin{tabular}{| l | l | l | l | l | l | l |}
+\hline
+\textbf{class} & \textbf{EvoSuite} & \textbf{mpt} & \textbf{nous} & \textbf{ocra} & \textbf{vicuna} & \textbf{wizlm} \\
+\hline
+BaseSettings & 53.33 & 52.85428571 & 47.61714286 & 40.63285714 & 52.37857143 & 34.11142857 \\
+\hline
+CacheHandler & 71.43 & 69.38857143 & 66.53142857 & 42.17571429 & 71.43 & 71.43 \\
+\hline
+NPMInstaller & 71.43 & 68.71 & 65.98571429 & 25.92666667 & 71.43 & 57.14285714 \\
+\hline
+NodeInstaller & 100 & 100 & 100 & 94.47857143 & 100 & 41.61142857 \\
+\hline
+Parallel & 100 & 57.14285714 & 57.32714286 & 32.275 & 54.94714286 & 56.59571429 \\
+\hline
+PnpmInstaller & 70.59 & 70.59 & 70.59 & 11.48 & 70.59 & 59.83428571 \\
+\hline
+PropertiesProviderUtils & 66.67 & 66.67 & 66.67 & 57.14428571 & 66.67 & 66.67 \\
+\hline
+SeekableByteArrayOutputStream & 93.75 & 89.28571429 & 91.96428571 & 45.454 & 93.75 & 44.75857143 \\
+\hline
+ZerocodeCorrelationshipLogger & 55 & 52.14285714 & 52.14285714 & 59.52428571 & 55 & 54.66142857 \\
+\hline
+
+\end{tabular}
+
+\end{table}
+
+
+\textbf{TODO\cite{}}
+After the execution phase, we perform the evaluation by analyzing multiple output files and logs, including build logs, test execution outputs, and coverage files. We classify each candidate test case tc into these categories: 
+• Syntax Error: the test has syntax errors; 
+• Build Error: the test has correct syntax but fails to build; 
+• Failing Test: the test builds but fails due to wrong assertions or expected behavior; 
+• Passing Test: the test builds and passes; 
+• Correct Test: the test passes and covers the correct focal method; The first four categories are mutually exclusive, that is a tc can either be classified in Syntax Error or Failed Build and so on, while the last category (Correct Test) represents a more stringent subset of the Passing Test one. Specifically, we consider a test case tc to be correct only if it builds properly, executes without failing, and covers the correct focal method given as input.
 
 \section{Research Questions}
 \label{sec:research_questions}
@@ -401,9 +440,17 @@ In this section, we will discuss the research questions. We set out to answer wi
 \begin{itemize}
     \item \textbf{RQ1:} How does the performance of LLM-generated assertions compare to assertions generated by traditional automated test generation tools, such as EvoSuite?
 
-    \item \textbf{RQ2:} To what extent can LLMs generalize across different software projects and programming paradigms when generating test assertions?
+    \item \textbf{RQ2:} How does the performance of traditional automated test generation tools, such as EvoSuite change if they are complemented with LLM-generated assertions?
     
-    \item \textbf{RQ3:} To what extent is the proposed LLM-based assertion generation approach suitable for real-world software development workflows? What are the challenges and practical considerations?
+    \item \textbf{RQ3:} How many attempts it usually takes to generate attempts? Is it worth repeating?
+    \textbf{MAKE IT BETTER.}
+
+    \item \textbf{RQ4:} Context size, dependency thing, How many methods were fed for prompt?
+    \textbf{MAKE IT BETTER.}
+    
+    \item \textbf{RQ5:} To what extent can LLMs generalize across different software projects and programming paradigms when generating test assertions?
+    
+    \item \textbf{RQ6:} To what extent is the proposed LLM-based assertion generation approach suitable for real-world software development workflows? What are the challenges and practical considerations?
 \end{itemize}
 
 \section{Results}
@@ -463,6 +510,52 @@ In this subsection, an overview of ...
 \label{tab:mutation_coverage}
 \end{table}
 \footnotetext{Significant values are highlighted with bold fonts and asterisk.}
+
+\begin{table}[H]
+\centering
+
+\begin{tabular}{| l | r | r | r | r | r | r |}
+\hline
+\multirow{2}{*}{\textbf{Class}} & \multirow{2}{*}{\textbf{EvoSuite}} & \multicolumn{5}{c|}{\textbf{EvoOracle}} \\ % Fix multicolumn formatting
+\cline{3-7} % Add a horizontal line between the headers
+ &  & \textbf{MPT-7B} & \textbf{Nous} & \textbf{Orca} & \textbf{Stable} & \textbf{WizardLM} \\
+ &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{BaseSettings} & \textbf{53.33\%*} & 52.38\% & 47.62\% & 38.09\% & 52.38\% & 31.43\% \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{CacheHandler} & \textbf{27.78\%*} & 26.99\% & 23.02\% & 15.87\% & \textbf{27.78\%*} & \textbf{27.78\%*}  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%*} & 32.79\% & 31.50\% & 4.92\% & \textbf{34.09\%*} & 25.97\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%*} & 55.66\% & 50.49\% & 42.61\% & \textbf{56.90\%*} & 6.65\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{Parallel} & \textbf{100\%*} & 52.75\% & 55.50\% & 30.77\% & 54.95\% & 56.60\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%*} & \textbf{29.27\%*} & \textbf{29.27\%*} & 2.09\% & \textbf{29.27\%*} & 16.37\%  \\
+\hline
+\scriptsize\textsc{Properties} &  &  &  &  &  &  \\
+\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%*} & \textbf{26.67\%*} & \textbf{26.67\%*} & 22.86\% & \textbf{26.67\%*} & \textbf{26.67\%*}  \\
+\hline
+\scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
+\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%*} & 89.29\% & 91.96\% & 25.00\% & \textbf{93.75\%} & 41.96\%  \\
+\hline
+\scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
+\scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
+\scriptsize\textsc{Logger} & \textbf{52.38\%*} & 48.30\% & 49.66\% & 35.37\% & \textbf{52.38\%*} & 51.70\%  \\
+\hline
+
+\end{tabular}
+\caption{Average Mutation Coverage by Class and Models for EvoSuite tests enhanced with EvoOracle assetions.\protect\footnotemark}
+\label{tab:mutation_coverage}
+\end{table}
+
+\footnotetext{Significant values are highlighted with bold fonts and asterisk.}
 \begin{table}[H]
 \centering
 
@@ -480,22 +573,22 @@ In this subsection, an overview of ...
 \scriptsize\textsc{CacheHandler} & \textbf{71.43\%*} & 0.00\% & 5.71\% & 0.00\% & 0.00\% & 0.00\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & 71.43\% & 93.71\% & 85.67\% & \textbf{100.00\%*} & \textbf{100.00\%*} & \textbf{100.00\%*} \\
+\scriptsize\textsc{NPMInstaller} & 71.43\% & 93.71\% & 85.67\% & \textbf{100\%*} & \textbf{100\%*} & \textbf{100\%*} \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{100.00\%*} & 91.60\% & 98.29\% & 69.00\% & 0.00\% & 98.71\% \\
+\scriptsize\textsc{NodeInstaller} & \textbf{100\%*} & 91.60\% & 98.29\% & 69.00\% & 0.00\% & 98.71\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100.00\%*} & 29.00\% & 52.86\% & 31.00\% & 33.43\% & 54.86\% \\
+\scriptsize\textsc{Parallel} & \textbf{100\%*} & 29.00\% & 52.86\% & 31.00\% & 33.43\% & 54.86\% \\
 \hline
 \scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & 70.59\% & 55.29\% & 54.33\% & 57.14\% & \textbf{100.00\%*} & 48.75\% \\
+\scriptsize\textsc{PnpmInstaller} & 70.59\% & 55.29\% & 54.33\% & 57.14\% & \textbf{100\%*} & 48.75\% \\
 \hline
 \scriptsize\textsc{Properties} &  &  &  &  &  &  \\
 \scriptsize\textsc{ProviderUtils} & \textbf{66.67\%*} & 45.43\% & 40.29\% & 40.29\% & 47.57\% & 34.57\% \\
 \hline
 \scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & 93.75\% & 5.00\% & 64.29\% & 66.50\% & \textbf{100.00\%*} & 37.83\% \\
+\scriptsize\textsc{ArrayOutputStream} & 93.75\% & 5.00\% & 64.29\% & 66.50\% & \textbf{100\%*} & 37.83\% \\
 \hline
 \scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
 \scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
@@ -661,6 +754,6 @@ The comparative analysis between LLM-generated assertions and traditional automa
 
 Surprisingly, LLMs, despite their profound capabilities in understanding natural language, grapple with the complexity of translating this understanding into precise code-related tasks. This observation raises critical questions about the adaptability of LLMs to the diverse nature of test cases, each with its unique intricacies and requirements for meaningful assertions. As developers interact with LLM-generated assertions, a spectrum of sentiments emerges, reflecting the potential and challenges in incorporating advanced language models into the day-to-day software development processes.
 
-Moreover, the results of Research Question 2, indicating an average time of 8.24 minutes for assertion generation for a single test case, shed light on a usability challenge. This prompts considerations about real-world practicality, prompting us to explore alternative approaches, including leveraging APIs like ChatGPT for faster and potentially more efficient interactions.
+Moreover, the results of Research Question 2, indicating an average time of 8.24 minutes for assertion generation for a single test case, shed light on a usability challenge. This prompts considerations about real-world practicality, prompting us to explore alternative approaches, including leveraging APIs like ChatGPT\cite{chatgpt}, Bard\cite{bard}, GooseAI\cite{gooseai}, Cohere\cite{cohere}, Claude\cite{claude}, LLaMA\cite{LLaMA}, PaLM\cite{palm} for faster and potentially more efficient interactions.
 
-It's important to highlight that the models utilized in our experiments are general-purpose Large Language Models, not specifically fine-tuned for code generation like Codex\cite{finnie-ansley_robots_2022}. Consequently, precise and thoughtful prompting is crucial when engaging with these models. Since they lack specialized training for code-related tasks, providing clear and context-rich instructions becomes paramount to ensure accurate and relevant responses. This characteristic underscores the need for developers to be mindful of the model's general nature and adapt their prompts accordingly for optimal results in the context of code-related inquiries.
+It's important to highlight that the models utilized in our experiments are general-purpose Large Language Models\cite{}, not specifically fine-tuned for code generation like Codex\cite{finnie-ansley_robots_2022}. Consequently, precise and thoughtful prompting is crucial when engaging with these models. Since they lack specialized training for code-related tasks, providing clear and context-rich instructions becomes paramount to ensure accurate and relevant responses. This characteristic underscores the need for developers to be mindful of the model's general nature and adapt their prompts accordingly for optimal results in the context of code-related inquiries.
