@@ -2,12 +2,12 @@
 \label{cha:experiments}
 \vspace{0.4 cm}
 
-In this chapter, we're going to delve into the experiments we've crafted to put our approach into action and assess its performance. We describe the design, implementation, and evaluation steps, providing a detailed account of each experiment. These experiments are crucial to demonstrating the effectiveness and practicality of our approach in real-world scenarios. The source code for our implementation of the tool can be found in the added references~\cite{evooracle_github}.
+In this chapter, we're going to delve into the experiments we've crafted to put our approach into action and assess its performance. We describe the design, implementation, and evaluation steps, providing a detailed account of each experiment. These experiments are crucial to demonstrating the effectiveness and practicality of our approach in real-world scenarios.
 
 \section{Data Collection}
 \label{sec:data_collection}
 \vspace{0.2 cm}
-Within this sub-chapter, we will elaborate on our methodology for assembling a collection of Java projects. We outline the procedures involved in generating test cases using automated tools such as EvoSuite and Randoop\cite{noauthor_randoop_nodate}, shedding light on the meticulous steps taken to ensure comprehensive test coverage. Additionally, we will discuss the meticulous process of preparing corresponding focal methods, elucidating how we identify and associate the specific methods targeted by each test case. This step is crucial in establishing a robust foundation for subsequent analyses and evaluations within the realm of software testing and development.
+Within this sub-chapter, we will elaborate on our methodology for assembling a collection of Java projects. We outline the procedures involved in generating test cases using automated tools such as EvoSuite and Randoop\cite{noauthor_randoop_nodate}, shedding light on the steps taken to ensure comprehensive test coverage. Additionally, we will discuss the process of preparing corresponding focal methods, elucidating how we identify and associate the specific methods targeted by each test case. This step is crucial in establishing a robust foundation for subsequent analyses and evaluations within the realm of software testing and development.
 
 \vspace{0.1 cm}
 \subsection{Java Projects Selection}
@@ -276,40 +276,40 @@ To create effective prompts for the Large Language Models, we gather information
 
 We follow an iterative process as shown in Algorithm~\ref{algorithm_prompt_generation} of generating prompts for the LLM, involving multiple rounds. Each round refines the prompt based on the LLM's response and aims to address potential challenges like token limit exceedance. The trimming process, controlled by conditional statements, adjusts the size of critical elements such as method details and test method code. This adaptive approach ensures that the prompt remains concise while retaining essential contextual information. The code systematically handles different trimming scenarios in each round, progressively refining the prompt to strike a balance between informativeness and LLM response feasibility. The overall mechanism involves generating messages from prompt templates, seeking LLM responses, and dynamically adjusting the prompt for subsequent iterations, all of which contribute to an effective and tailored interaction with the LLM.
 
-\begin{algorithm}
-    \caption{Prompt Generation Algorithm}
-    \label{algorithm_prompt_generation}
-    \begin{algorithmic}[1]
-        \Function{generate\_prompt}{$\text{context}$}
-            \State $\text{rounds}, \text{max\_attempts}, \text{prompt\_template} \gets 0, 3, \text{...}$
-            \State $\text{prompts\_and\_responses} \gets []$
+% \begin{algorithm}
+%     \caption{Prompt Generation Algorithm}
+%     \label{algorithm_prompt_generation}
+%     \begin{algorithmic}[1]
+%         \Function{generate\_prompt}{$\text{context}$}
+%             \State $\text{rounds}, \text{max\_attempts}, \text{prompt\_template} \gets 0, 3, \text{...}$
+%             \State $\text{prompts\_and\_responses} \gets []$
             
-            \While{$\text{rounds} < \text{max\_attempts}$}
-                \State $\text{steps}, \text{rounds} \gets 0, \text{rounds} + 1$
-                \If{$\text{rounds} > 2$}
-                    \State $\text{trimmed\_context} \gets \text{trim\_context(context, 3)}$
-                \EndIf
+%             \While{$\text{rounds} < \text{max\_attempts}$}
+%                 \State $\text{steps}, \text{rounds} \gets 0, \text{rounds} + 1$
+%                 \If{$\text{rounds} > 2$}
+%                     \State $\text{trimmed\_context} \gets \text{trim\_context(context, 3)}$
+%                 \EndIf
                 
-                \If{$\text{rounds} > 1$}
-                    \State $\text{trimmed\_context} \gets \text{trim\_context(context, 5)}$
-                \EndIf
+%                 \If{$\text{rounds} > 1$}
+%                     \State $\text{trimmed\_context} \gets \text{trim\_context(context, 5)}$
+%                 \EndIf
                 
-                \State $\text{messages} \gets \text{generate\_messages(prompt\_template, trimmed\_context)}$
+%                 \State $\text{messages} \gets \text{generate\_messages(prompt\_template, trimmed\_context)}$
                 
-                \State $\text{llm\_result} \gets \text{ask\_openLLM(messages)}$
-                \State $\text{prompts\_and\_responses.append(\{"prompt": messages, "response": llm\_result\})}$
+%                 \State $\text{llm\_result} \gets \text{ask\_openLLM(messages)}$
+%                 \State $\text{prompts\_and\_responses.append(\{"prompt": messages, "response": llm\_result\})}$
                 
-                \State $\text{source\_code, replaced\_assertions} \gets \text{replace\_assertions(source\_code)}$
+%                 \State $\text{source\_code, replaced\_assertions} \gets \text{replace\_assertions(source\_code)}$
                 
-                \If{$\text{assertions}$}
-                    \State $\text{context} \gets \text{update\_prompt\_and\_ask\_again(context)}$
-                \EndIf
-            \EndWhile
+%                 \If{$\text{assertions}$}
+%                     \State $\text{context} \gets \text{update\_prompt\_and\_ask\_again(context)}$
+%                 \EndIf
+%             \EndWhile
             
-            \State $\text{print\_and\_save\_results(prompts\_and\_responses)}$
-        \EndFunction
-    \end{algorithmic}
-\end{algorithm}
+%             \State $\text{print\_and\_save\_results(prompts\_and\_responses)}$
+%         \EndFunction
+%     \end{algorithmic}
+% \end{algorithm}
 
 Throughout each iteration, we analyze LLM responses to capture assertions using the specified Assertion regex, as outlined in Listing~\ref{assertions_regex}. When the parsing operation successfully identifies an assertion, we advance to the subsequent phase of crafting the test case with EvoOracle assertion. In cases where the assertion parsing is unsuccessful, we continue the iteration process until we reach the budget limit specified in the configuration. 
 
