@@ -154,7 +154,7 @@ Assertion must end with ```;```
 \label{sec:experimental_setup}
 \vspace{0.2 cm}
 
-For our experimental setup, we conducted the experiments on a dedicated High-Performance Computing (HPC) cluster equipped with four nodes. Each node features Intel Xeon CPU 6226R\cite{noauthor_intel_nodate} processors running at 2.9GHz, with a configuration of 32 CPUs and 16GB of RAM. To ensure consistency and reproducibility, we created a specialized Singularity\cite{noauthor_introduction_nodate} image version v3.8.7\cite{noauthor_singularity_releases_nodate} with Java 1.8 and Python 3.10 and all the Python required libraries~\ref{} tailored for our implemented tool, enabling seamless execution on the HPC cluster. This configuration allowed us to leverage the cluster's computational capabilities effectively for our experimentation.
+For our experimental setup, we conducted the experiments on a dedicated High-Performance Computing (HPC) cluster equipped with four nodes. Each node features Intel Xeon CPU 6226R\cite{noauthor_intel_nodate} processors running at 2.9GHz, with a configuration of 32 CPUs and 16GB of RAM. To ensure consistency and reproducibility, we created a specialized Singularity\cite{noauthor_introduction_nodate} image version v3.8.7\cite{noauthor_singularity_releases_nodate} with Java 1.8 and Python 3.10 and all the Python required libraries tailored for our implemented tool, enabling seamless execution on the HPC cluster. This configuration allowed us to leverage the cluster's computational capabilities effectively for our experimentation.
 
 We conducted a total of 9660 experiments, exploring various configurations of test cases, models, oracle types, and repetitions. The distribution of experiments is outlined by the following equation:
 \[
@@ -233,11 +233,11 @@ In this section, we will discuss the research questions. We set out to answer wi
     \item \textbf{RQ3: How does the performance of EvoSuite change if they are complemented with EvoOracle generated assertions?}\\
     Instead of replacing the asserions in EvoSuite, we enhance the them by adding the EvoOracle generated assertions to them. Then we run mutation testing again to see how the EvoOracle enahance EvoSuite tests compare against the individual EvoSuite and EvoOracle.
     
-    \item \textbf{RQ4: How many attempts are typically needed for successful assertion generation, and does the success rate improve with additional attempts following initial failure?}\\
-    This research question aims to understand the efficiency of assertion generation by quantifying the number of attempts required for success. The measurement involves tracking the count of attempts made for assertion generation during the experimental process. To answer this question, we analyze the success and failure instances, categorizing them based on the number of attempts made. By examining the patterns of successful assertion generation over multiple attempts, we gain insights into the effectiveness of iterative prompting and identify whether additional attempts contribute to increased success rates. This exploration helps evaluate the practicality and reliability of the assertion generation process, guiding developers on optimal strategies when dealing with failed attempts.
+    % \item \textbf{RQ4: How many attempts are typically needed for successful assertion generation, and does the success rate improve with additional attempts following initial failure?}\\
+    % This research question aims to understand the efficiency of assertion generation by quantifying the number of attempts required for success. The measurement involves tracking the count of attempts made for assertion generation during the experimental process. To answer this question, we analyze the success and failure instances, categorizing them based on the number of attempts made. By examining the patterns of successful assertion generation over multiple attempts, we gain insights into the effectiveness of iterative prompting and identify whether additional attempts contribute to increased success rates. This exploration helps evaluate the practicality and reliability of the assertion generation process, guiding developers on optimal strategies when dealing with failed attempts.
     
-    \item \textbf{RQ5: How well-suited is the proposed LLM-based assertion generation approach for practical integration into real-world software development workflows, and what challenges and practical considerations arise from its implementation?}\\
-    We analyze the time consumed by the tool to generate assertions.
+    % \item \textbf{RQ5: How well-suited is the proposed LLM-based assertion generation approach for practical integration into real-world software development workflows, and what challenges and practical considerations arise from its implementation?}\\
+    % We analyze the time consumed by the tool to generate assertions.
     % \item \textbf{RQ5:} Context size, dependency thing, How many methods were fed for prompt?
     % \textbf{MAKE IT BETTER.}
     
@@ -248,14 +248,137 @@ In this section, we will discuss the research questions. We set out to answer wi
 \label{sec:results}
 \vspace{0.2 cm}
 
-In this section, we discuss the results for ... 
+In this section, we discuss the experimental results and provide answers to the research questions stated in previous section~\ref{sec:research_questions}.
 
 \vspace{0.1 cm}
-\subsection{RQ1}
+\subsection{RQ1: How is the quality of the EvoOracle generated Oracles?}
 \label{sec:results_rq1}
 \vspace{0.1 cm}
 
-In this subsection, an overview of ...
+In our experiments encompassing five distinct language models, namely MPT-7B-Chat, Orca\_mini\_13B-GGML\_v3, StableVicuna-13B, WizardLM-13B-V1.1, and Nous-hermes-13B\_ggml\_v3, we aimed to assess the quality and efficiency of the EvoOracle-generated assertions. Each model underwent testing on a set of 146 test methods, resulting in a cumulative total of 9932 attempts across all models. The analysis revealed varying patterns in the assertion generation process. Notably, syntax errors were encountered in the range of 13.79\% to 29.08\%, showcasing instances where the generated assertions failed to conform to correct syntax. Compile errors exhibited substantial variability, ranging from 4.17\% to 63.58\%, indicative of challenges in compiling certain assertions. Runtime errors, though generally low (0.78\% to 8.07\%), signaled issues in the execution of compiled test cases. Successful test executions, represented by the passed category, ranged from 2.28\% to 28.35\%, highlighting the models' ability to generate functional assertions. The overall aggregate results across all models provide valuable insights into the distribution of assertion generation outcomes, with syntax errors and compile errors being prominent challenges that warrant further investigation and refinement in the EvoOracle approach.
+
+Delving into the individual models, MPT-7B-Chat exhibited a moderate Syntax error rate of 16.13\%, implying that a notable portion of attempts resulted in assertions with syntax-related issues. A substantial Compile error rate of 24.34\% indicated challenges in compiling a significant proportion of assertions. Runtime errors were relatively low at 2.42\%, showcasing reasonable success in executing compiled test cases, and the passed rate stood at 7.67\%, reflecting the proportion of successfully executed test cases. Figure~\ref{fig:rq1_mpt} shows the results for this model.
+
+Orca\_mini\_13B-GGML\_v3 faced a higher Syntax error rate of 29.08\%, signaling a significant number of assertions with syntax-related discrepancies. The Compile error rate, although lower at 4.17\%, still highlighted challenges in compiling certain assertions. Runtime errors and passed rates were comparatively low at 0.78\% and 2.28\%, respectively, suggesting a relatively smooth execution of compiled test cases with a modest success rate. Figure~\ref{fig:rq1_orca} shows the results for this model.
+
+In the case of StableVicuna-13B, Syntax errors were entirely absent, indicating a commendable adherence to correct syntax in generated assertions. However, a substantial Compile error rate of 63.58\% pointed to challenges in successfully compiling assertions. Runtime errors were at 8.07\%, reflecting some issues in the execution of compiled test cases. The passed rate was 28.35\%, representing the proportion of successful test case executions. Figure~\ref{fig:rq1_vicuna} shows the results for this model.
+
+WizardLM-13B-V1.1 exhibited a Syntax error rate of 16.96\%, highlighting instances where assertions lacked correct syntax. A notable Compile error rate of 22.82\% suggested difficulties in compiling certain assertions. Runtime errors were low at 0.90\%, indicating relatively smooth execution of compiled test cases. The passed rate was 7.56\%, representing the proportion of successfully executed test cases. Figure~\ref{fig:rq1_wizlm} shows the results for this model.
+
+Nous-hermes-13B\_ggml\_v3 experienced a Syntax error rate of 13.79\%, indicating a moderate occurrence of syntax-related issues in generated assertions. The Compile error rate was 22.92\%, signifying challenges in compiling a considerable portion of assertions. Runtime errors were at 2.28\%, reflecting some issues in the execution of compiled test cases. The passed rate stood at 12.83\%, denoting the proportion of successful test case executions. Figure~\ref{fig:rq1_nous} shows the results for this model.
+
+The collective analysis of all models revealed an overall Syntax error rate of 17.85\%, Compile error rate of 22.05\%, RuntimeError rate of 2.18\%, and a passed rate of 9.26\%. These comprehensive results underscore the nuanced nature of assertion generation, shedding light on areas of improvement and refinement for the EvoOracle approach. Figure~\ref{fig:rq1_pass_all} shows the Comparison of passed tests for different Classes and Models.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_pass_all.png}
+\caption{Comparison of passed tests for different Classes and Models}
+\label{fig:rq1_pass_all}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_vicuna.png}
+\caption{RQ1 results for StableVicuna-13B}
+\label{fig:rq1_vicuna}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_wizlm.png}
+\caption{RQ1 results for WizardLM-13B-V1.1}
+\label{fig:rq1_wizlm}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_orca.png}
+\caption{RQ1 results for Orca\_mini\_13B-GGML\_v3}
+\label{fig:rq1_orca}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_nous.png}
+\caption{RQ1 results for Nous-hemes-13B\_ggml\_v3}
+\label{fig:rq1_nous}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/RQ1_mpt.png}
+\caption{RQ1 results for MPT-7B-Chat}
+\label{fig:rq1_mpt}
+\end{figure}
+
+% \begin{table}[H]
+% \centering
+% \small
+% \begin{tabular}{| p{2.5cm} | l | l | l | l | l | l |}
+% \hline
+% \textbf{Class} & \textbf{Methods} & \textbf{Attempts} & \textbf{SyntaxError} & \textbf{CompileError} & \textbf{RuntimeError} & \textbf{Passed} \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% BaseSettings & 14 & 196 & 31 (15.82\%) & 33 (16.84\%) & 10 (5.10\%) & 24 (12.24\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% CacheHandler & 13 & 148 & 13 (8.78\%) & 39 (26.35\%) & 7 (4.73\%) & 32 (21.62\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% NodeInstaller & 18 & 258 & 45 (17.44\%) & 74 (28.68\%) & 0 (0.00\%) & 7 (2.71\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% NPMInstaller & 18 & 249 & 45 (18.07\%) & 71 (28.51\%) & 0 (0.00\%) & 10 (4.02\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% Parallel & 6 & 91 & 12 (13.19\%) & 26 (28.57\%) & 0 (0.00\%) & 4 (4.40\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% PnpmInstaller & 21 & 338 & 86 (25.44\%) & 48 (14.20\%) & 0 (0.00\%) & 13 (3.85\%) \\
+% \hline
+%  & & & & & & \\
+% Properties & & & & & & \\
+% ProviderUtils & 14 & 173 & 16 (9.25\%) & 33 (19.08\%) & 18 (10.40\%) & 31 (17.92\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% ResolutionCache & 2 & 18 & 0 (0.00\%) & 4 (22.22\%) & 0 (0.00\%) & 10 (55.56\%) \\
+% \hline
+%  & & & & & & \\
+%   & & & & & & \\
+% Seekable & 5 & 71 & 13 (18.31\%) & 18 (25.35\%) & 0 (0.00\%) & 4 (5.63\%) \\
+% \hline
+% SeekableByte & & & & & & \\
+% ArrayOutput & & & & & & \\
+% Stream & 13 & 175 & 13 (7.43\%) & 74 (42.29\%) & 0 (0.00\%) & 4 (2.29\%) \\
+% \hline
+% ZeroCode & & & & & & \\
+% Assertions & & & & & & \\
+% Processor & 1 & 7 & 0 (0.00\%) & 0 (0.00\%) & 0 (0.00\%) & 7 (100.00\%) \\
+% \hline
+% Zerocode & & & & & & \\
+% Correlationship & & & & & & \\
+% Logger & 21 & 297 & 52 (17.51\%) & 72 (24.24\%) & 14 (4.71\%) & 9 (3.03\%) \\
+% \hline
+% \end{tabular}
+% \caption{RQ1}
+% \label{tab:demanddailyresultsforecast}
+% \end{table}
+
+\vspace{0.1 cm}
+\subsection{RQ2: How does the performance of EvoOracle generated assertions compare to assertions generated by traditional automated test generation tool, EvoSuite?}
+\label{sec:results_rq2}
+\vspace{0.1 cm}
+
+The mutation analysis results, conducted on nine distinct classes using EvoSuite and five different Large Language Models (LLMs), offer valuable insights into the efficacy of test suites generated by these tools. In Table ~\ref{tab:mutation_coverage}, a comparison is drawn between the mutation coverage of EvoOracle across five models and EvoSuite on nine Java classes. EvoSuite, serving as the baseline, consistently demonstrates commendable mutation scores in all cases, showcasing its effectiveness in identifying and eliminating mutants. Notably, none of the LLMs exhibits a performance boost; instead, there is limited impact from LLMs, resulting in lower mutation scores compared to EvoSuite. This nuanced interplay underscores the class-specific nature of interactions between EvoSuite and LLMs, emphasizing the need for a refined and context-aware approach in our testing strategies. Figure~\ref{fig:mutation_coverage} gives an overview of the mutation coverage scores across all classes and models. Among the LLMs, Nous-hermes-13B and Stable Vicuna 13B have better overall mutation coverage than others.
+
+While comparing test strength scores, in Table~\ref{tab:test_strength}, we can see that in specific classes, Orca\_mini\_13B, Stable Vicuna 13B and WizardLM 13B-V1.1 exhibits a notable test strength score of 100\% in NPMInstaller, PNInstaller and SeekableByteArrayOutputStream classes. The rest of the cases, Evosuite is the outperformer as we can see from Figure~\ref{fig:test_strength} overview.
 
 \begin{table}[H]
 \centering
@@ -302,51 +425,6 @@ In this subsection, an overview of ...
 \end{table}
 \footnotetext{Significant values are highlighted with bold fonts.}
 
-\begin{table}[H]
-\centering
-
-\begin{tabular}{| l | r | r | r | r | r | r |}
-\hline
-\multirow{2}{*}{\textbf{Class}} & \multirow{2}{*}{\textbf{EvoSuite}} & \multicolumn{5}{c|}{\textbf{EvoSuite + EvoOracle}} \\ % Fix multicolumn formatting
-\cline{3-7} % Add a horizontal line between the headers
- &  & \textbf{MPT-7B} & \textbf{Nous} & \textbf{Orca} & \textbf{Stable} & \textbf{WizardLM} \\
- &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{BaseSettings} & \textbf{53.33\%} & 52.38\% & 47.62\% & 38.09\% & 52.38\% & 31.43\% \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{CacheHandler} & \textbf{27.78\%} & 26.99\% & 23.02\% & 15.87\% & \textbf{27.78\%} & \textbf{27.78\%}  \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%} & 32.79\% & 31.50\% & 4.92\% & \textbf{34.09\%} & 25.97\%  \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%} & 55.66\% & 50.49\% & 42.61\% & \textbf{56.90\%} & 6.65\%  \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{Parallel} & \textbf{100\%} & 52.75\% & 55.50\% & 30.77\% & 54.95\% & 56.60\%  \\
-\hline
-\scriptsize\textsc{} &  &  &  &  &  &  \\
-\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%} & \textbf{29.27\%} & \textbf{29.27\%} & 2.09\% & \textbf{29.27\%} & 16.37\%  \\
-\hline
-\scriptsize\textsc{Properties} &  &  &  &  &  &  \\
-\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%} & \textbf{26.67\%} & \textbf{26.67\%} & 22.86\% & \textbf{26.67\%} & \textbf{26.67\%}  \\
-\hline
-\scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
-\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%} & 89.29\% & 91.96\% & 25.00\% & \textbf{93.75\%} & 41.96\%  \\
-\hline
-\scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
-\scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
-\scriptsize\textsc{Logger} & \textbf{52.38\%} & 48.30\% & 49.66\% & 35.37\% & \textbf{52.38\%} & 51.70\%  \\
-\hline
-
-\end{tabular}
-\caption{Average Mutation Coverage by Class and Models for EvoSuite tests enhanced with EvoOracle assetions.\protect\footnotemark}
-\label{tab:mutation_coverage}
-\end{table}
-
-\footnotetext{Significant values are highlighted with bold fonts.}
 \begin{table}[H]
 \centering
 
@@ -457,11 +535,107 @@ In this subsection, an overview of ...
 \label{fig:line_coverage}
 \end{figure}
 
+\vspace{0.1 cm}
+\subsection{RQ3: How does the performance of EvoSuite change if they are complemented with EvoOracle generated assertions?}
+\label{sec:results_rq3}
+\vspace{0.1 cm}
+
+In addressing RQ3, we sought to understand how EvoSuite's performance is influenced when complemented with EvoOracle-generated assertions. EvoSuite, considered as the baseline, exhibited notable line coverage (71.23\%), mutation coverage (52.69\%), and test strength (75.80\%). To enhance EvoSuite's tests, we integrated EvoOracle-generated assertions for five different models. The results indicate variations in the performance metrics. Notably, EvoSuite combined with MPT-7B-Chat demonstrated a slight reduction in line coverage and mutation coverage. However, the test strength score remained relatively high. Similarly, combinations with Nous-hermes-13B\_ggml\_v3 and StableVicuna-13B showed comparable trends. On the other hand, incorporating EvoOracle-generated assertions from Orca\_mini\_13B-GGML\_v3 and WizardLM-13B-V1.1 led to more significant reductions in line coverage and mutation coverage. These outcomes suggests that adding EvoOracle assertions into Evosuite does not improve performance.
+
+The performance comparison of EvoSuite-enhanced tests across different classes reveals for the "BaseSettings" class, EvoSuite stands as the baseline with a mutation score of 53.33\%, while other models such as Nous, Orca, and WizardLM exhibit varying degrees of enhancement, with Orca displaying the lowest mutation score at 38.09\%. In "CacheHandler," EvoSuite starts with a baseline of 27.78\%, and again, other models contribute to varying degrees of improvement, with EvoSuite maintaining the highest score. Notably, in "Parallel," EvoSuite achieves a perfect score of 100\%, yet other models have a lower score. In "SeekableByteArrayOutputStream," EvoSuite boasts a high baseline of 93.75\%, with other models contributing to the improvement, Nous and Orca showing substantial impact. These findings underscore the nuanced impact of EvoOracle-generated assertions on EvoSuite's mutation testing performance, with variations across different classes and models. The collective analysis provides a comprehensive understanding of how EvoOracle's contributions influence EvoSuite's effectiveness in handling mutation testing scenarios. Table~\ref{tab:enhances_mutation_coverage} shows the average mutation coverage by Class and Models for EvoSuite tests enhanced with EvoOracle assetions.
+
+Overall, EvoSuite exhibits robust performance, indicating its ability to detect and kill mutants in the codebase. However, the complementary LLMs demonstrate varying degrees of impact on EvoSuite's mutation scores across different classes. Notably, MPT-7B-Chat and Orca\_mini\_13B-GGML\_v3 show competitive performance in classes like BaseSettings and NodeInstaller, surpassing EvoSuite in mutation scores. Conversely, in classes such as CacheHandler and NPMInstaller, LLMs contribute minimally, resulting in lower mutation scores compared to EvoSuite alone. The results from Figure~\ref{fig:enhanced_mutation_coverage} is an indication that Evosuite performance is not improved by the EvoOracle assertions.
+
+\begin{table}[H]
+\centering
+
+\begin{tabular}{| l | r | r | r | r | r | r |}
+\hline
+\multirow{2}{*}{\textbf{Class}} & \multirow{2}{*}{\textbf{EvoSuite}} & \multicolumn{5}{c|}{\textbf{EvoSuite + EvoOracle}} \\ % Fix multicolumn formatting
+\cline{3-7} % Add a horizontal line between the headers
+ &  & \textbf{MPT-7B} & \textbf{Nous} & \textbf{Orca} & \textbf{Stable} & \textbf{WizardLM} \\
+ &  &  & \textbf{hermes-13b} & \textbf{mini\_13B} & \textbf{Vicuna-13B} & \textbf{13B-V1.1} \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{BaseSettings} & \textbf{53.33\%} & 52.38\% & 47.62\% & 38.09\% & 52.38\% & 31.43\% \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{CacheHandler} & \textbf{27.78\%} & 26.99\% & 23.02\% & 15.87\% & \textbf{27.78\%} & \textbf{27.78\%}  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{NPMInstaller} & \textbf{34.09\%} & 32.79\% & 31.50\% & 4.92\% & \textbf{34.09\%} & 25.97\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{NodeInstaller} & \textbf{56.9\%} & 55.66\% & 50.49\% & 42.61\% & \textbf{56.90\%} & 6.65\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{Parallel} & \textbf{100\%} & 52.75\% & 55.50\% & 30.77\% & 54.95\% & 56.60\%  \\
+\hline
+\scriptsize\textsc{} &  &  &  &  &  &  \\
+\scriptsize\textsc{PnpmInstaller} & \textbf{29.27\%} & \textbf{29.27\%} & \textbf{29.27\%} & 2.09\% & \textbf{29.27\%} & 16.37\%  \\
+\hline
+\scriptsize\textsc{Properties} &  &  &  &  &  &  \\
+\scriptsize\textsc{ProviderUtils} & \textbf{26.67\%} & \textbf{26.67\%} & \textbf{26.67\%} & 22.86\% & \textbf{26.67\%} & \textbf{26.67\%}  \\
+\hline
+\scriptsize\textsc{SeekableByte} &  &  &  &  &  &  \\
+\scriptsize\textsc{ArrayOutputStream} & \textbf{93.75\%} & 89.29\% & 91.96\% & 25.00\% & \textbf{93.75\%} & 41.96\%  \\
+\hline
+\scriptsize\textsc{Zerocode} &  &  &  &  &  &  \\
+\scriptsize\textsc{Correlationship} &  &  &  &  &  &  \\
+\scriptsize\textsc{Logger} & \textbf{52.38\%} & 48.30\% & 49.66\% & 35.37\% & \textbf{52.38\%} & 51.70\%  \\
+\hline
+
+\end{tabular}
+\caption{Average Mutation Coverage by Class and Models for EvoSuite tests enhanced with EvoOracle assetions.\protect\footnotemark}
+\label{tab:enhances_mutation_coverage}
+\end{table}
+
+\footnotetext{Significant values are highlighted with bold fonts.}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{images/enhanced_mutation_coverage_avg.png}
+\caption{Average Mutation Coverage by Class and Models for Evosuite enhanced with EvoOracle}
+\label{fig:enhanced_mutation_coverage}
+\end{figure}
+
+\section{Threats to Validity}
+\label{sec:t2v}
+\vspace{0.2 cm}
+
+The study acknowledges several potential threats to its validity.
+
+\begin{enumerate}
+    \item \textbf{Randomness in LLM Outputs:} One significant threat to the study's validity stems from the inherent randomness associated with Large Language Models (LLMs). The generated outputs are subject to variations based on the model's training conditions and prompt inputs, potentially impacting the reproducibility and consistency of results. In order to minimize the variation, we ran each experiments 7 times and took the median results.
+
+    \item \textbf{Generalizability to Diverse Datasets:} The study recognizes the potential limitation of generalizability to other datasets or programming languages. The findings, rooted in the analysis of Java projects from GitHub, may not extend seamlessly to different programming communities or languages, highlighting a domain-specific consideration.
+
+    \item \textbf{Dataset-Induced Bias:} The dataset itself, composed of Java projects sourced from GitHub, introduces a possible bias reflective of the practices and characteristics specific to the Java programming community on this platform. This inherent bias could influence the study's conclusions and their applicability to broader software development contexts.
+
+    \item \textbf{Concerns of Data Leakage:} In addressing concerns related to data leakage, the study takes precautionary measures by excluding candidate repositories that might appear in the pretraining corpus of the LLMs. This step aims to ensure the integrity of the evaluation process and prevent inadvertent leakage of information.
+
+    \item \textbf{Selection Bias from Compilation and Execution Requirements:} The imposition of specific compilation and execution requirements, such as using Maven as the package manager and ensuring compatibility, introduces a potential source of selection bias. The study acknowledges the impact of these criteria on the composition of the chosen repositories, potentially affecting the representativeness of the dataset.
+
+    \item \textbf{Evaluation Metrics Limitations:} The study recognizes the limitations of the chosen evaluation metrics and criteria. While these metrics provide a quantitative basis for assessment, they may not comprehensively capture the nuanced aspects of LLM-based test oracle generation. This acknowledgment indicates a need for a holistic understanding beyond the quantitative measures employed.
+\end{enumerate}
+
+These considerations collectively contribute to the study's robustness and transparency, providing insights into potential factors that may influence the interpretation and application of its findings.
+
+\section{Discussion}
+\label{sec:discussion}
+\vspace{0.2 cm}
+
+Diving into a comprehensive discussion of our experiments and findings unveils nuanced insights into the intricate landscape of automated testing practices, particularly in the context of leveraging Large Language Models (LLMs) for test oracle generation. The empirical analysis of our approach to generating oracles for unit test cases provides a nuanced understanding of the challenges and potential breakthroughs in this domain. As we navigate the landscape of automated testing, it becomes evident that the multifaceted nature of test cases poses unique challenges that demand innovative solutions.
+
+The comparative analysis between LLM-generated assertions and traditional automated test generation tools, exemplified by EvoSuite, brings to light unexpected and valuable results. The effectiveness and efficiency of LLM-based approaches did not universally outperform traditional methods, marking a noteworthy observation that prompts a deeper exploration into the factors influencing assertion quality and the overall testing workflow.
+
+Surprisingly, LLMs, despite their profound capabilities in understanding natural language, grapple with the complexity of translating this understanding into precise code-related tasks. This observation raises critical questions about the adaptability of LLMs to the diverse nature of test cases, each with its unique intricacies and requirements for meaningful assertions. As developers interact with LLM-generated assertions, a spectrum of sentiments emerges, reflecting the potential and challenges in incorporating advanced language models into the day-to-day software development processes.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{images/test_api_distribution.png}
-\caption{Testing APIs Breakdown Distribution: EvoSuite vs EvoOracle}
-\label{fig:test_api_distribution}
+\caption{Distribution of Assertion Invocations: EvoSuite vs EvoOracle}
+\label{fig:assertion_distribution}
 \end{figure}
 
 \begin{figure}[H]
@@ -506,45 +680,6 @@ In this subsection, an overview of ...
 \label{fig:assertion_time_class}
 \end{figure}
 
-\vspace{0.1 cm}
-\subsection{RQ2}
-\label{sec:results_rq2}
-\vspace{0.1 cm}
+Moreover, Figure~\ref{fig:assertion_time_runs} indicating an average time of 8.24 minutes for assertion generation for a single test case, shed light on a usability challenge. This prompts considerations about real-world practicality, prompting us to explore alternative approaches, including leveraging APIs like ChatGPT\cite{chatgpt}, Bard\cite{bard}, GooseAI\cite{gooseai}, Cohere\cite{cohere}, Claude\cite{claude}, LLaMA\cite{LLaMA}, PaLM\cite{palm} for faster and potentially more efficient interactions.
 
-In this subsection, an overview of ...
-
-\section{Threats to Validity}
-\label{sec:t2v}
-\vspace{0.2 cm}
-
-The study acknowledges several potential threats to its validity.
-
-\begin{enumerate}
-    \item \textbf{Randomness in LLM Outputs:} One significant threat to the study's validity stems from the inherent randomness associated with Large Language Models (LLMs). The generated outputs are subject to variations based on the model's training conditions and prompt inputs, potentially impacting the reproducibility and consistency of results. In order to minimize the variation, we ran each experiments 7 times and took the median results.
-
-    \item \textbf{Generalizability to Diverse Datasets:} The study recognizes the potential limitation of generalizability to other datasets or programming languages. The findings, rooted in the analysis of Java projects from GitHub, may not extend seamlessly to different programming communities or languages, highlighting a domain-specific consideration.
-
-    \item \textbf{Dataset-Induced Bias:} The dataset itself, composed of Java projects sourced from GitHub, introduces a possible bias reflective of the practices and characteristics specific to the Java programming community on this platform. This inherent bias could influence the study's conclusions and their applicability to broader software development contexts.
-
-    \item \textbf{Concerns of Data Leakage:} In addressing concerns related to data leakage, the study takes precautionary measures by excluding candidate repositories that might appear in the pretraining corpus of the LLMs. This step aims to ensure the integrity of the evaluation process and prevent inadvertent leakage of information.
-
-    \item \textbf{Selection Bias from Compilation and Execution Requirements:} The imposition of specific compilation and execution requirements, such as using Maven as the package manager and ensuring compatibility, introduces a potential source of selection bias. The study acknowledges the impact of these criteria on the composition of the chosen repositories, potentially affecting the representativeness of the dataset.
-
-    \item \textbf{Evaluation Metrics Limitations:} The study recognizes the limitations of the chosen evaluation metrics and criteria. While these metrics provide a quantitative basis for assessment, they may not comprehensively capture the nuanced aspects of LLM-based test oracle generation. This acknowledgment indicates a need for a holistic understanding beyond the quantitative measures employed.
-\end{enumerate}
-
-These considerations collectively contribute to the study's robustness and transparency, providing insights into potential factors that may influence the interpretation and application of its findings.
-
-\section{Discussion}
-\label{sec:discussion}
-\vspace{0.2 cm}
-
-Diving into a comprehensive discussion of our experiments and findings unveils nuanced insights into the intricate landscape of automated testing practices, particularly in the context of leveraging Large Language Models (LLMs) for test oracle generation. The empirical analysis of our approach to generating oracles for unit test cases provides a nuanced understanding of the challenges and potential breakthroughs in this domain. As we navigate the landscape of automated testing, it becomes evident that the multifaceted nature of test cases poses unique challenges that demand innovative solutions.
-
-The comparative analysis between LLM-generated assertions and traditional automated test generation tools, exemplified by EvoSuite, brings to light unexpected and valuable results. The effectiveness and efficiency of LLM-based approaches did not universally outperform traditional methods, marking a noteworthy observation that prompts a deeper exploration into the factors influencing assertion quality and the overall testing workflow.
-
-Surprisingly, LLMs, despite their profound capabilities in understanding natural language, grapple with the complexity of translating this understanding into precise code-related tasks. This observation raises critical questions about the adaptability of LLMs to the diverse nature of test cases, each with its unique intricacies and requirements for meaningful assertions. As developers interact with LLM-generated assertions, a spectrum of sentiments emerges, reflecting the potential and challenges in incorporating advanced language models into the day-to-day software development processes.
-
-Moreover, the results of Research Question 2, indicating an average time of 8.24 minutes for assertion generation for a single test case, shed light on a usability challenge. This prompts considerations about real-world practicality, prompting us to explore alternative approaches, including leveraging APIs like ChatGPT\cite{chatgpt}, Bard\cite{bard}, GooseAI\cite{gooseai}, Cohere\cite{cohere}, Claude\cite{claude}, LLaMA\cite{LLaMA}, PaLM\cite{palm} for faster and potentially more efficient interactions.
-
-It's important to highlight that the models utilized in our experiments are general-purpose Large Language Models\cite{}, not specifically fine-tuned for code generation like Codex\cite{finnie-ansley_robots_2022}. Consequently, precise and thoughtful prompting is crucial when engaging with these models. Since they lack specialized training for code-related tasks, providing clear and context-rich instructions becomes paramount to ensure accurate and relevant responses. This characteristic underscores the need for developers to be mindful of the model's general nature and adapt their prompts accordingly for optimal results in the context of code-related inquiries.
+It's important to highlight that the models utilized in our experiments are general-purpose Large Language Models, not specifically fine-tuned for code generation like Codex\cite{finnie-ansley_robots_2022}. Consequently, precise and thoughtful prompting is crucial when engaging with these models. Since they lack specialized training for code-related tasks, providing clear and context-rich instructions becomes paramount to ensure accurate and relevant responses. This characteristic underscores the need for developers to be mindful of the model's general nature and adapt their prompts accordingly for optimal results in the context of code-related inquiries.
